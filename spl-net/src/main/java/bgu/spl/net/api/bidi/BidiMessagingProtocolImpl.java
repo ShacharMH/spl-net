@@ -1,13 +1,20 @@
 package bgu.spl.net.api.bidi;
 
-/* to implement
+/* – This interface replaces the MessagingProtocol interface.
+It exists to support peer 2 peer messaging via the Connections interface.
  */
 public class BidiMessagingProtocolImpl<T> implements BidiMessagingProtocol<T> {
 
+    /* initiate the protocol with the active connections structure of the server and saves the
+owner client’s connection id.
+     */
     public void start(int connectionId, Connections<T> connections){
         return;
     }
-
+    /* As in MessagingProtocol, processes a given
+message. Unlike MessagingProtocol, responses are sent via the
+connections object send function.
+     */
     public void process(T message){
         return;
     }

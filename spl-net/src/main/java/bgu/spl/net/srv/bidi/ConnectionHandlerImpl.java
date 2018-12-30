@@ -7,6 +7,9 @@ work with the BidiMessagingProtocol<T> interface instead of MessagingProtocol<T>
 
 public class ConnectionHandlerImpl<T> implements ConnectionHandler<T> {
 
+    /* sends msg T to the client. Should be used by send and
+broadcast in the Connections implementation.
+     */
     public void send(T msg){
         return;
     }

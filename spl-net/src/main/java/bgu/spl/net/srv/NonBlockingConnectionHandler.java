@@ -19,7 +19,8 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     private final MessageEncoderDecoder<T> encdec;
     private final Queue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
     private final SocketChannel chan;
-    private final Reactor reactor;
+    private final Reactor reactor; /* so the NonBlockingConnectionHandler is used ONLY with the reactor,
+                                      and not with the threadPerClient implementation */
 
     public NonBlockingConnectionHandler(
             MessageEncoderDecoder<T> reader,
@@ -42,7 +43,7 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
             ex.printStackTrace();
         }
 
-        if (success) {
+        if (success) { // meaning successfully read something which is NOT -1.
             buf.flip();
             return () -> {
                 try {
@@ -81,8 +82,11 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     }
 
     public void continueWrite() {
-        while (!writeQueue.isEmpty()) {
-            try {
+        while (!writeQueue.isEmpty()) { // while writeQueue is not empty
+            try { /* we have one chance of writing the top ByteBuffer. we check if we succeeded in writing.
+                     If so we remove the top from the queue. else, we return and continue next time from the same spot.
+                     we know we continue from the same spot because ByteBuffer has two fields that act as saving places:
+                     capacity, limit.*/
                 ByteBuffer top = writeQueue.peek();
                 chan.write(top);
                 if (top.hasRemaining()) {
@@ -96,7 +100,7 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
             }
         }
 
-        if (writeQueue.isEmpty()) {
+        if (writeQueue.isEmpty()) { // if writeQueue is empty, we chekc if we need to terminate the server, and if not - we update the channels' selection keys.
             if (protocol.shouldTerminate()) close();
             else reactor.updateInterestedOps(chan, SelectionKey.OP_READ);
         }

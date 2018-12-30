@@ -20,15 +20,19 @@ public interface Server<T> extends Closeable {
      * @param <T> The Message Object for the protocol
      * @return A new Thread per client server
      */
+    /* Refactor the Thread-Per-Client server to support the new interfaces.
+     */
     public static <T> Server<T>  threadPerClient(
             int port,
             Supplier<MessagingProtocol<T> > protocolFactory,
             Supplier<MessageEncoderDecoder<T> > encoderDecoderFactory) {
 
+        /* this is an anonymous class: the arguments in the parenthesis is the arguments for a constructor.
+           the _new BaseServer<T>_ - a class to extend. then there is a method - execute.*/
         return new BaseServer<T>(port, protocolFactory, encoderDecoderFactory) {
             @Override
             protected void execute(BlockingConnectionHandler<T>  handler) {
-                new Thread(handler).start();
+                new Thread(handler).start(); // is this a function we need to implement? Allah knows.
             }
         };
 
@@ -42,6 +46,8 @@ public interface Server<T> extends Closeable {
      * @param encoderDecoderFactory A factory that creats new MessageEncoderDecoder
      * @param <T> The Message Object for the protocol
      * @return A new reactor server
+     */
+    /* Refactor the Reactor server to support the new interfaces.
      */
     public static <T> Server<T> reactor(
             int nthreads,

@@ -12,6 +12,9 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ActorThreadPool {
+    /* actorThreadPool helps us managing all the tasks in the server's queue, s.t. there's always ONE task per client at
+    most in the main queue. when we finished one task of a client c in the queue, we check if there are other tasks needed
+    to be done for c. if so, we add them to to the main queue. */
 
     private final Map<Object, Queue<Runnable>> acts;
     private final ReadWriteLock actsRWLock;
@@ -26,7 +29,7 @@ public class ActorThreadPool {
     }
 
     public void submit(Object act, Runnable r) {
-        synchronized (act) {
+        synchronized (act) { // so _act_ acts as the keeper for the thread - if we don't have anything with that thread in playingNow- we add r.
             if (!playingNow.contains(act)) {
                 playingNow.add(act);
                 execute(r, act);
@@ -40,9 +43,10 @@ public class ActorThreadPool {
         threads.shutdownNow();
     }
 
-    private Queue<Runnable> pendingRunnablesOf(Object act) {
+    private Queue<Runnable> pendingRunnablesOf(Object act) { /* we return the pedgdingRunnables of this thread,
+    if exists. if not, we return an empty linked list.*/
 
-        actsRWLock.readLock().lock();
+        actsRWLock.readLock().lock(); // we lock so that no one else can touch this queue while we get the relevant runnable queue.
         Queue<Runnable> pendingRunnables = acts.get(act);
         actsRWLock.readLock().unlock();
 
@@ -65,12 +69,14 @@ public class ActorThreadPool {
     }
 
     private void complete(Object act) {
+        /* if we took the runnable from playingNow, we remove it. else, we took it from pending queue and already
+           removed it, and now we remove the next one from the pending queue.*/
         synchronized (act) {
             Queue<Runnable> pending = pendingRunnablesOf(act);
             if (pending.isEmpty()) {
                 playingNow.remove(act);
             } else {
-                execute(pending.poll(), act);
+                execute(pending.poll(), act); // poll - returns and removes the element from queue.
             }
         }
     }

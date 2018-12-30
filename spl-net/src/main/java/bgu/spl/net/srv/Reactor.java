@@ -38,20 +38,20 @@ public class Reactor<T> implements Server<T> {
     @Override
     public void serve() {
 	selectorThread = Thread.currentThread();
-        try (Selector selector = Selector.open();
-                ServerSocketChannel serverSock = ServerSocketChannel.open()) {
+        try (Selector selector = Selector.open(); // we initiate the selector
+                ServerSocketChannel serverSock = ServerSocketChannel.open()) { // and also initiate the server socket.
 
             this.selector = selector; //just to be able to close
 
-            serverSock.bind(new InetSocketAddress(port));
+            serverSock.bind(new InetSocketAddress(port)); // Binds the channel's socket to a local address and configures the socket to listen for connections.
             serverSock.configureBlocking(false);
             serverSock.register(selector, SelectionKey.OP_ACCEPT);
 			System.out.println("Server started");
 
-            while (!Thread.currentThread().isInterrupted()) {
+            while (!Thread.currentThread().isInterrupted()) { // the main loop of the reactor
 
-                selector.select();
-                runSelectionThreadTasks();
+                selector.select(); // created the table of the threads that have pending tasks.
+                runSelectionThreadTasks(); // adds the tasks of changing the selection keys to somewhere.
 
                 for (SelectionKey key : selector.selectedKeys()) {
 
@@ -80,10 +80,10 @@ public class Reactor<T> implements Server<T> {
     }
 
     /*package*/ void updateInterestedOps(SocketChannel chan, int ops) {
-        final SelectionKey key = chan.keyFor(selector);
-        if (Thread.currentThread() == selectorThread) {
-            key.interestOps(ops);
-        } else {
+        final SelectionKey key = chan.keyFor(selector); // Retrieves the key representing the channel's registration with the given selector.
+        if (Thread.currentThread() == selectorThread) { // if we are in the selector thread, then we do something
+            key.interestOps(ops); // Sets this key's interest set to the given value.
+        } else { // else, we add the task to the relevant queue.
             selectorTasks.add(() -> {
                 key.interestOps(ops);
             });
@@ -105,7 +105,7 @@ public class Reactor<T> implements Server<T> {
 
     private void handleReadWrite(SelectionKey key) {
         @SuppressWarnings("unchecked")
-        NonBlockingConnectionHandler<T> handler = (NonBlockingConnectionHandler<T>) key.attachment();
+        NonBlockingConnectionHandler<T> handler = (NonBlockingConnectionHandler<T>) key.attachment(); // Retrieves the current attachment.
 
         if (key.isReadable()) {
             Runnable task = handler.continueRead();

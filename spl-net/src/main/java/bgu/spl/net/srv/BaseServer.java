@@ -35,14 +35,16 @@ public abstract class BaseServer<T> implements Server<T> {
 
             while (!Thread.currentThread().isInterrupted()) {
 
-                Socket clientSock = serverSock.accept();
+                Socket clientSock = serverSock.accept(); /* here we take the (client) socket that wants to register at the server,
+                                                            and save it in the Socket clientSocket.*/
 
                 BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<>(
                         clientSock,
                         encdecFactory.get(),
                         protocolFactory.get());
+                /* we then build a handler with that clientSocket, a copy of the protocol, and a copy of the encoder-decoder */
 
-                execute(handler);
+                execute(handler); /* then, we execute the handler (in a different thread */
             }
         } catch (IOException ex) {
         }

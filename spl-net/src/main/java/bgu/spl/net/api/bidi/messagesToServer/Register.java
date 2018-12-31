@@ -30,7 +30,7 @@ private boolean finished;
     @Override
     protected Object decode(byte nextByte) {
         if(!finished) {//if we aren't finished reading the USERNAME
-            if (nextByte != '\0') {
+            if (nextByte != 0) {
                 bytes[indexOfUserName] = nextByte;
                 indexOfUserName++;
             } else {//we have finished reading the input
@@ -39,7 +39,7 @@ private boolean finished;
             }
         }
          else{//we have finished reading the USERNAME
-             if (nextByte!='\0'){
+             if (nextByte!=0){
                  bytes[indexOfUserPassword]=nextByte;
                  indexOfUserPassword++;
             }

@@ -9,7 +9,7 @@ import bgu.spl.net.api.bidi.messagesToClient.Ack;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
 
 
-public class Register<T> implements BasicMessageToServerInterface<T> {
+public class Register extends BasicMessageToServer {
 private String name;
 private String password;
 private byte[] bytes;

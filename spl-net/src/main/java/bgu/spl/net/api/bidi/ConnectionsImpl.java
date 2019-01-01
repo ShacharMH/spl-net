@@ -1,4 +1,7 @@
 package bgu.spl.net.api.bidi;
+import bgu.spl.net.srv.bidi.ConnectionHandler;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 //************* start with this *****************
 /* Implement Connections<T> to hold a list of the new ConnectionHandler interface
@@ -12,9 +15,32 @@ connected to the server
  */
 public class ConnectionsImpl<T> implements Connections<T> {
 
+    private ConcurrentHashMap<AtomicInteger, ConnectionHandler> connectedUsers;
+    private AtomicInteger connectionId;
+
+    public ConnectionsImpl() {
+        this.connectedUsers = new ConcurrentHashMap<>();
+        this.connectionId = new AtomicInteger(1);
+    }
+
+    public void addToConnectedUsers(ConnectionHandler connectionHandler) {
+        connectedUsers.put(connectionId, connectionHandler);
+        connectionId.incrementAndGet();
+    }
+
     /* sends a message T to client represented by the given connId
      */
     public boolean send(int connectionId, T msg) {
+        if (checkIfContains(connectionId)) {
+            connectedUsers.get(new AtomicInteger(connectionId)).send(msg);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkIfContains(int connectionId) {
+        if (connectedUsers.contains(new AtomicInteger(connectionId)))
+            return true;
         return false;
     }
 
@@ -24,12 +50,13 @@ Remember, Connections<T> belongs to the server pattern
 implemenration, not the protocol!.
      */
     public void broadcast(T msg) {
-        return;
+        connectedUsers.forEach((connId, connHandler) -> connHandler.send(msg));
     }
 
     /* removes active client connId from map.
      */
     public void disconnect(int connectionId) {
-        return;
+        if (checkIfContains(connectionId))
+            connectedUsers.remove(new AtomicInteger(connectionId));
     }
 }

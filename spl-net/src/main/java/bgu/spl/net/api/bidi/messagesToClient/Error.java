@@ -10,13 +10,12 @@ public class Error extends BasicMessageToClient {
     public Error(short type){
         super();
         this.type=type;
-
+        setOpCode((short)11);
     }
 
     @Override
     public byte[] encode() {
         byte[] returnValue=new byte[4];
-        setOpCode((short)11);
         byte[] additions=shortToBytes(getOpCode());//translation of the OpCode
         returnValue[0]=additions[0];
         returnValue[1]=additions[1];

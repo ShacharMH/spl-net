@@ -5,6 +5,7 @@ import bgu.spl.net.api.bidi.AllUsers;
 import bgu.spl.net.api.bidi.Connections;
 import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 import bgu.spl.net.api.bidi.User;
+import bgu.spl.net.api.bidi.messagesToClient.Ack;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
 
 
@@ -14,7 +15,7 @@ private String password;
 private byte[] bytes;
 private int indexOfUserName;//change name later  //holds the space of the USERNAME in bytes
 private int indexOfUserPassword;//change name later  ////holds the space of the PASSWORD in bytes
-private boolean finished;
+private boolean finished;//indicates if we have finished to read USERNAME
 
 
     public Register(){
@@ -35,7 +36,7 @@ private boolean finished;
                 indexOfUserName++;
             } else {//we have finished reading the input
                 finished = true;
-                indexOfUserPassword= indexOfUserName;//we will continue to submit the bytes from this value, and we know it symbolizes the spot where
+                indexOfUserPassword= indexOfUserName;//we will continue to submit the bytes from this value(from here we save the PASSWORD)
             }
         }
          else{//we have finished reading the USERNAME
@@ -64,10 +65,10 @@ private boolean finished;
             System.out.println("User is already registered");
             connections.send(ConnectionID,new Error((short)1));//The constructed Error is the response to send back to this client.
         }
-        else{
+        else{//registration of a user
             User user=new User(name,password);
             AllUsers.getInstance().registerUser(name,user);
-            //connections.send(ConnectionID,new ACK) //need to implement ACK message, the message sent back to the client.
+            connections.send(ConnectionID,new Ack((short)1)); //Succesfull register, Ack is the message sent back to the client.
         }
 
     }

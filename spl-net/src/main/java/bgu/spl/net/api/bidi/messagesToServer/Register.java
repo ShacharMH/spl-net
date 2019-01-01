@@ -8,7 +8,7 @@ import bgu.spl.net.api.bidi.User;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
 
 
-public class Register extends BasicMessageToServer {
+public class Register<T> implements BasicMessageToServerInterface<T> {
 private String name;
 private String password;
 private byte[] bytes;
@@ -28,7 +28,7 @@ private boolean finished;
 
 
     @Override
-    protected Object decode(byte nextByte) {
+    public Object decode(byte nextByte) {
         if(!finished) {//if we aren't finished reading the USERNAME
             if (nextByte != 0) {
                 bytes[indexOfUserName] = nextByte;
@@ -58,7 +58,7 @@ private boolean finished;
 
 
     @Override
-    protected void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
+    public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
         //If user is already registered:
         if(AllUsers.getInstance().checkIfRegistered(name)){
             System.out.println("User is already registered");

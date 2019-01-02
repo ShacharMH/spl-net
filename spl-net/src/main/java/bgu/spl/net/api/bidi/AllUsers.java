@@ -26,7 +26,7 @@ public  class  AllUsers {
 
 
 public void registerUser(String name, User user){
-        namesOfRegisteredUsers.add(name);
+        RegisteredUsers.add(user);
         registeredUsers.put(name,user);
         user.setRegistrationTime(numOfRegistered);
         numOfRegistered++;

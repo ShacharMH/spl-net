@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import bgu.spl.net.api.bidi.messagesToClient.Notification;
+import bgu.spl.net.api.bidi.messagesToServer.BasicMessageToServer;
 
 public class User {
     private AtomicInteger connectionID;
@@ -56,6 +57,7 @@ public class User {
     public List<String> getFollowers() {
         return followers;
     }
+
 
 
 

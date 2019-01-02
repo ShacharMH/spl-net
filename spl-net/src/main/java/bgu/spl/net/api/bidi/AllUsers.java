@@ -50,10 +50,11 @@ public void MapConnection(Integer connectionNum, String userName){
      }
 
 public boolean checkIfLoggedIn(int connectionId) {
-    String name = getName(connectionId);
-    if (name != null)
-        return loggedInUsers.get(name) != null;
-    throw new RuntimeException("connectionId is not found in IDsToNames hash map");
+    return IDsToNames.get(connectionId) != null;
+}
+
+public boolean checkIfLoggedIn(String name) {
+    return loggedInUsers.get(name) != null;
 }
 
 public String getName(int connectionId) {

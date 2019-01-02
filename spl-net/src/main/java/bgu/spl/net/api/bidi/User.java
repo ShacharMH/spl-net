@@ -8,6 +8,7 @@ public class User {
     private AtomicInteger connectionID;
     private String name;
     private String password;
+    private int registrationTime;
     private List<String> followers;//list of followers of this user
     private List<String> following;//list of users that the user is following
     private List<Notification> AwaitingNotifications;// NEED TO IMPLEMENT NOTIFICATION
@@ -20,6 +21,10 @@ public class User {
         this.password=password;
         this.followers = new CopyOnWriteArrayList<>();
         this.following = new CopyOnWriteArrayList<>();
+    }
+
+    public void setRegistrationTime(int registrationTime) {
+        this.registrationTime = registrationTime;
     }
 
     public String getPassword(){
@@ -39,11 +44,16 @@ public class User {
     }
 
     public boolean followOrUnfollow(int followOrUnfollow, String name) {
-        if (followOrUnfollow == 0)
+        if (followOrUnfollow == 0) // new follow
             return addToFollowing(name);
         return removeFromFollowing(name);
     }
 
+    public void followerOrUnfollower(int followOrUnfollow, String name) {
+        if (followOrUnfollow == 0) // new follower
+            addToFollowers(name);
+        removeFromFollowers(name);
+    }
 
     private boolean addToFollowing(String name) {
         if (following.contains(name))
@@ -57,6 +67,18 @@ public class User {
             return false;
         following.remove(name);
         return true;
+    }
+
+    private void addToFollowers(String name) {
+        if (followers.contains(name))
+            return;
+        followers.add(name);
+    }
+
+    private void removeFromFollowers(String name) {
+        if (!followers.contains(name))
+            return;
+        followers.remove(name);
     }
 
     public List<String> getFollowers() {

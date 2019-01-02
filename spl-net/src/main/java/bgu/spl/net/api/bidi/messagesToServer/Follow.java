@@ -78,13 +78,14 @@ public class Follow extends BasicMessageToServer {
         }
         // user is logged in: send an error iff all follow/unfollow are unsuccessful.
         User user = allUsers.getUserByConnectionId(ConnectionID);
-            int connectionId;
-            boolean success = false; // the success of each un/follow
+        userName = user.getName();
+        boolean success = false; // the success of each un/follow
             for (String tmp : userNameList) {
                 success = user.followOrUnfollow(followOrUnfollow, tmp);
                 if (success) {
                     numberOfSuccessfulFollowsOrUnfollows++;
                     namesOfSuccessfullFollowsOrUnfollows.add(tmp);
+                    allUsers.getUserByName(tmp).followerOrUnfollower(followOrUnfollow,userName);
                 }
                 if (sendErrorMessage && success)
                     sendErrorMessage = false;
@@ -127,10 +128,4 @@ public class Follow extends BasicMessageToServer {
         return result;
     }
 
-    public byte[] shortToBytes(short num) {
-        byte[] bytesArr = new byte[2];
-        bytesArr[0] = (byte)((num >> 8) & 0xFF);
-        bytesArr[1] = (byte)(num & 0xFF);
-        return bytesArr;
-    }
 }

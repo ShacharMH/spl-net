@@ -3,7 +3,10 @@ package bgu.spl.net.api.bidi.messagesToServer;
 import bgu.spl.net.api.bidi.AllUsers;
 import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 import bgu.spl.net.api.bidi.Connections;
+import bgu.spl.net.api.bidi.User;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
+import bgu.spl.net.api.bidi.messagesToClient.Notification;
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -42,6 +45,9 @@ public class Post extends BasicMessageToServer {
             return;
         }
 
+        // saving the Post in the relevant data structures:
+
+
         // initilizing the list of users to send post to to followers
         usersToSendPostTo = allUsers.getUserByConnectionId(ConnectionID).getFollowers();
 
@@ -58,14 +64,13 @@ public class Post extends BasicMessageToServer {
             }
         }
 
-        // we already have the message we need to send.
-        // now we need to send it to users that are connected.
-        // for users that are not connected - we need to add it to their pending mesages list
         for (String name : usersToSendPostTo) {
+            // if a user is logged in - we send him the message
             if (allUsers.checkIfLoggedIn(name)){
-                connections.send(allUsers.getConnectionId(name), bytes);
-            } else {
-
+                connections.send(allUsers.getConnectionId(name), new Notification((char)PostOpCode, allUsers.getName(ConnectionID), string));
+            } else { // if user is not logged in, we add a notification to its pending notif. list.
+                Notification notification = new Notification((char)PostOpCode, allUsers.getName(ConnectionID), string);
+                allUsers.getUserByName(name).addToNotifications(notification);
             }
         }
 

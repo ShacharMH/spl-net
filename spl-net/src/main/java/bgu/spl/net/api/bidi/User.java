@@ -3,7 +3,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import bgu.spl.net.api.bidi.messagesToClient.Notification;
-import bgu.spl.net.api.bidi.messagesToServer.BasicMessageToServer;
 
 public class User {
     private AtomicInteger connectionID;
@@ -12,8 +11,9 @@ public class User {
     private List<String> followers;//list of followers of this user
     private List<String> following;//list of users that the user is following
     private List<Notification> AwaitingNotifications;// NEED TO IMPLEMENT NOTIFICATION
-    private boolean isOnline;
-    private int registrationTime;
+    private List<Notification> sentPM;
+    private List<Notification> sentPost;
+
 
     public User(String name,String password){
         this.name=name;
@@ -28,10 +28,6 @@ public class User {
 
     public void setConnectionID(Integer connectionID){
         this.connectionID= new AtomicInteger(connectionID);
-    }
-
-    public void setRegistrationTime(int registrationTime) {
-        this.registrationTime = registrationTime;
     }
 
     public AtomicInteger getConnectionId() {
@@ -61,6 +57,10 @@ public class User {
 
     public List<String> getFollowers() {
         return followers;
+    }
+
+    public void addToNotifications(Notification notification) {
+        AwaitingNotifications.add(notification);
     }
 
 

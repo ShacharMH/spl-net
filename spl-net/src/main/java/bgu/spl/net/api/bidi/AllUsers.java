@@ -1,6 +1,8 @@
 package bgu.spl.net.api.bidi;
 
 
+import bgu.spl.net.api.bidi.messagesToClient.Notification;
+
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -19,8 +21,8 @@ public  class  AllUsers {
     private ConcurrentHashMap<String, User> registeredUsers=new ConcurrentHashMap<>();//Users that have registered
     private ConcurrentHashMap<String, User> loggedInUsers=new ConcurrentHashMap<>();//Users that have logged in
     private ConcurrentHashMap<Integer, String> IDsToNames=new  ConcurrentHashMap<>();//Map between  a user's ID to his name
-    private ConcurrentHashMap<String, String> userPosts = new ConcurrentHashMap<>(); // map between users and their posts
-    private ConcurrentHashMap<String, String> userPMs = new ConcurrentHashMap<>(); // map between users and their PMs.
+    private ConcurrentHashMap<String, List<Notification>> allPosts = new ConcurrentHashMap<>(); // map between users and their posts
+    private ConcurrentHashMap<String, List<Notification>> allPMs = new ConcurrentHashMap<>(); // map between users and their PMs.
 
 
 public void registerUser(String name, User user){
@@ -73,12 +75,22 @@ public boolean checkIfRegistered(String name){
     return registeredUsers.containsKey(name);
 }
 
-
-
 public List<User> getRegisteredUsers(){
     return RegisteredUsers;
 }
 
+public void savePost(String name, Notification notification) {
+    if (allPosts.get(name) == null) {
+        allPosts.put(name, new CopyOnWriteArrayList<>());
+    }
+    allPosts.get(name).add(notification);
+}
 
+public void savePM(String name, Notification notification) {
+    if (allPMs.get(name) == null) {
+        allPMs.put(name, new CopyOnWriteArrayList<>());
+    }
+    allPMs.get(name).add(notification);
+}
 
 }

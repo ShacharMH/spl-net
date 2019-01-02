@@ -12,7 +12,8 @@ public class User {
     private List<String> followers;//list of followers of this user
     private List<String> following;//list of users that the user is following
     private List<Notification> AwaitingNotifications;// NEED TO IMPLEMENT NOTIFICATION
-
+    private boolean isOnline;
+    private int registrationTime;
 
     public User(String name,String password){
         this.name=name;
@@ -27,6 +28,10 @@ public class User {
 
     public void setConnectionID(Integer connectionID){
         this.connectionID= new AtomicInteger(connectionID);
+    }
+
+    public void setRegistrationTime(int registrationTime) {
+        this.registrationTime = registrationTime;
     }
 
     public AtomicInteger getConnectionId() {

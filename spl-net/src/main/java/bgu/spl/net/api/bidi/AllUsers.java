@@ -14,8 +14,9 @@ public  class  AllUsers {
      public static AllUsers getInstance() {
          return HolderOfAllUsers.allUsers;
      }
-
-    private List<Pair> registeredUsers = new CopyOnWriteArrayList<>();
+    private int numOfRegistered=0;
+    private List<User> RegisteredUsers;
+    private ConcurrentHashMap<String, User> registeredUsers=new ConcurrentHashMap<>();//Users that have registered
     private ConcurrentHashMap<String, User> loggedInUsers=new ConcurrentHashMap<>();//Users that have logged in
     private ConcurrentHashMap<Integer, String> IDsToNames=new  ConcurrentHashMap<>();//Map between  a user's ID to his name
     private ConcurrentHashMap<String, String> userPosts = new ConcurrentHashMap<>(); // map between users and their posts
@@ -23,7 +24,10 @@ public  class  AllUsers {
 
 
 public void registerUser(String name, User user){
-        registeredUsers.add(new Pair(name, user));
+        namesOfRegisteredUsers.add(name);
+        registeredUsers.put(name,user);
+        user.setRegistrationTime(numOfRegistered);
+        numOfRegistered++;
     }
 
 public void logInAUser(String name, User user){
@@ -66,30 +70,15 @@ public int getConnectionId(String name) {
 }
 
 public boolean checkIfRegistered(String name){
-    for (Pair pair : registeredUsers) {
-        if (pair.equals(name))
-            return true;
-    }
-    return false;
+    return registeredUsers.containsKey(name);
 }
 
-public List<Pair> getRegisteredUsers(){
-    return registeredUsers;
+
+
+public List<User> getRegisteredUsers(){
+    return RegisteredUsers;
 }
 
-private static class Pair {
 
-    String name;
-    User user;
-
-    public Pair(String name, User user) {
-        this.name = name;
-        this.user = user;
-    }
-
-    public boolean equals(String name) {
-        return this.name == name;
-    }
-}
 
 }

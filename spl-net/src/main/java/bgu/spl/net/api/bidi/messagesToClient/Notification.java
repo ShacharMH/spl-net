@@ -15,6 +15,7 @@ private int indexOfUserName;//change name later  //holds the space of the USERNA
         this.Content=content;
         setOpCode((short)9);
         indexOfUserName=0;
+
     }
 
 

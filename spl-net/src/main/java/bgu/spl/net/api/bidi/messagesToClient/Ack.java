@@ -9,12 +9,15 @@ public class Ack extends BasicMessageToClient {
     public Ack(short type){
         super();
         this.type=type;
+        setOpCode((short)10);
+        encode();
     }
+
+    public Ack(short type,String message){}//For more complex messages like follow
 
     @Override
     public byte[] encode() {
         byte[] returnValue=new byte[4];
-        setOpCode((short)10);
         byte[] additions=shortToBytes(getOpCode());//translation of the OpCode
         returnValue[0]=additions[0];
         returnValue[1]=additions[1];

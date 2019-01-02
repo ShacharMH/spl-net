@@ -58,9 +58,7 @@ public boolean checkIfRegistered(String name){
     return registeredUsers.containsKey(name);
 }
 
-public boolean checkIfLoggedIn(String name){
-         return loggedInUsers.containsKey(name);
-}
+
 
 public ConcurrentHashMap<String, User> getRegisteredUsers(){
     return registeredUsers;

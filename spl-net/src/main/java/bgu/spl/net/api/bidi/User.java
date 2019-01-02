@@ -26,6 +26,20 @@ public class User {
     public void setConnectionID(Integer connectionID){
         this.connectionID= new AtomicInteger(connectionID);
     }
+
+    public boolean addToFollowing(int connectionId) {
+        if (following.contains(connectionId))
+            return false;
+        following.add(connectionId);
+        return true;
+    }
+
+    public boolean removeFromFollowing(int connectionId) {
+        if (!following.contains(connectionId))
+            return false;
+        following.remove(following.indexOf(connectionId));
+        return true;
+    }
 }
 
 

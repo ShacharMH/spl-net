@@ -10,6 +10,7 @@ import bgu.spl.net.api.bidi.messagesToClient.Error;
 
 
 public class Register extends BasicMessageToServer {
+private AllUsers allUsers;
 private String name;
 private String password;
 private byte[] bytes;
@@ -24,6 +25,7 @@ private boolean finished;//indicates if we have finished to read USERNAME
         indexOfUserName=0;
         indexOfUserPassword=0;
         this.finished=false;
+        allUsers = AllUsers.getInstance();
     }
 
 
@@ -61,13 +63,14 @@ private boolean finished;//indicates if we have finished to read USERNAME
     @Override
     public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
         //If user is already registered:
-        if(AllUsers.getInstance().checkIfRegistered(name)){
+
+        if(allUsers.checkIfRegistered(name)){
             System.out.println("User is already registered");
             connections.send(ConnectionID,new Error((short)1));//The constructed Error is the response to send back to this client.
         }
         else{//registration of a user
             User user=new User(name,password);
-            AllUsers.getInstance().registerUser(name,user);
+            allUsers.registerUser(name,user);
             connections.send(ConnectionID,new Ack((short)1)); //Succesfull register, Ack is the message sent back to the client.
         }
 

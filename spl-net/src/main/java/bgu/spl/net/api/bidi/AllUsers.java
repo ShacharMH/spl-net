@@ -1,5 +1,7 @@
 package bgu.spl.net.api.bidi;
 
+import com.sun.org.apache.xpath.internal.operations.String;
+
 import java.util.concurrent.ConcurrentHashMap;
 
  public  class  AllUsers {
@@ -25,9 +27,29 @@ public void logInAUser(String name, User user){
          loggedInUsers.put(name,user);
      }
 
+public User getUserByName(String name) {
+    return loggedInUsers.get(name);
+}
+
+public User getUserByConnectionId(int connectionId) {
+    String name = IDsToNames.get(connectionId);
+    return getUserByName(name);
+}
+
 public void MapConnection(Integer connectionNum, String userName){
          IDsToNames.put(connectionNum,userName);
      }
+
+public boolean checkIfLoggedIn(int connectionId) {
+    String name = getName(connectionId);
+    if (name != null)
+        return checkIfLoggedIn(name);
+    throw new RuntimeException("connectionId is not found in IDsToNames hash map");
+}
+
+public String getName(int connectionId) {
+    return IDsToNames.get(connectionId);
+}
 
 public boolean checkIfRegistered(String name){
     return registeredUsers.containsKey(name);

@@ -15,7 +15,7 @@ public  class  AllUsers {
          return HolderOfAllUsers.allUsers;
      }
     private int numOfRegistered=0;
-    private List<User> RegisteredUsers;
+    private List<User> ListOfRegisteredUsers;
     private ConcurrentHashMap<String, User> registeredUsers=new ConcurrentHashMap<>();//Users that have registered
     private ConcurrentHashMap<String, User> loggedInUsers=new ConcurrentHashMap<>();//Users that have logged in
     private ConcurrentHashMap<Integer, String> IDsToNames=new  ConcurrentHashMap<>();//Map between  a user's ID to his name
@@ -24,7 +24,7 @@ public  class  AllUsers {
 
 
 public void registerUser(String name, User user){
-        RegisteredUsers.add(user);
+        ListOfRegisteredUsers.add(user);
         registeredUsers.put(name,user);
         user.setRegistrationTime(numOfRegistered);
         numOfRegistered++;
@@ -41,7 +41,7 @@ loggedInUsers.remove(userName);
 }
 
 public User getUserByName(String name) {
-    return loggedInUsers.get(name);
+    return registeredUsers.get(name);
 }//
 
 public User getUserByConnectionId(int connectionId) {
@@ -75,8 +75,12 @@ public boolean checkIfRegistered(String name){
 
 
 
-public List<User> getRegisteredUsers(){
-    return RegisteredUsers;
+public ConcurrentHashMap getRegisteredUsers(){
+    return registeredUsers;
+}
+
+public List<User> getListOfRegisteredUsers(){
+    return ListOfRegisteredUsers;
 }
 
 

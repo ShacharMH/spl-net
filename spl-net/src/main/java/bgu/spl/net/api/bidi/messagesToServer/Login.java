@@ -70,12 +70,12 @@ public class Login extends BasicMessageToServer {
             System.out.println("User is already logged in");
             connections.send(ConnectionID,new Error((short)2));//The constructed Error is the response to send back to this client.
         }
-        else if (!allUsers.getRegisteredUsers().get(name).getPassword().equals(password)) {//if current password doesn't match the one the user registered with
+        else if (!allUsers.getUserByName(name).getPassword().equals(password)) {//if current password doesn't match the one the user registered with
             System.out.println("Wrong password");
             connections.send(ConnectionID,new Error((short)2));//The constructed Error is the response to send back to this client.
         }
         else {
-            User user=allUsers.getRegisteredUsers().get(name);
+            User user=allUsers.getUserByName(name);
             user.setConnectionID(ConnectionID);
             allUsers.logInAUser(name,user);
             allUsers.MapConnection(ConnectionID,name);

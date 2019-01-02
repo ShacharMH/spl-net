@@ -34,6 +34,10 @@ public class User {
         this.registrationTime = registrationTime;
     }
 
+    public int getRegistrationTime(){
+        return registrationTime;
+    }
+
     public AtomicInteger getConnectionId() {
         return this.connectionID;
     }
@@ -63,7 +67,9 @@ public class User {
         return followers;
     }
 
-
+    public String getName(){
+        return name;
+    }
 
 
 

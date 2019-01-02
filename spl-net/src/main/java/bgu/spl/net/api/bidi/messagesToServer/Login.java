@@ -66,7 +66,7 @@ public class Login extends BasicMessageToServer {
             System.out.println("User is not registered");
             connections.send(ConnectionID,new Error((short)2));//The constructed Error is the response to send back to this client.
         }
-        else if (allUsers.checkIfLoggedIn(name)) {//if the client is already logged in
+        else if (allUsers.checkIfLoggedIn(ConnectionID)) {//if the client is already logged in
             System.out.println("User is already logged in");
             connections.send(ConnectionID,new Error((short)2));//The constructed Error is the response to send back to this client.
         }
@@ -74,7 +74,7 @@ public class Login extends BasicMessageToServer {
             System.out.println("Wrong password");
             connections.send(ConnectionID,new Error((short)2));//The constructed Error is the response to send back to this client.
         }
-        else {//*********NEED TO DEAL WITH MESSAGES HE RECIEVED BEFORE HE LOGGED IN AKA PENDING MESSAGES
+        else {
             User user=allUsers.getRegisteredUsers().get(name);
             user.setConnectionID(ConnectionID);
             allUsers.logInAUser(name,user);

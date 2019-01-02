@@ -2,6 +2,7 @@ package bgu.spl.net.api.bidi;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import bgu.spl.net.api.bidi.messagesToClient.Notification;
 
 public class User {
     private AtomicInteger connectionID;
@@ -9,7 +10,7 @@ public class User {
     private String password;
     private List<Integer> followers;//list of followers of this user, represented by their connection ID
     private List<Integer> following;//list of users that the user is following, represented by their connection ID
-    //private Vector<Notification>// NEED TO IMPLEMENT NOTIFICATION
+    private List<Notification> AwaitingNotifications;// NEED TO IMPLEMENT NOTIFICATION
 
 
     public User(String name,String password){
@@ -55,6 +56,7 @@ public class User {
 
 
 
+
     private static class Pair {
 
         String name;
@@ -74,6 +76,11 @@ public class User {
         }
 
 
+    }
+
+
+    public List<Notification> getAwaitingNotifications() {
+        return AwaitingNotifications;
     }
 
 }

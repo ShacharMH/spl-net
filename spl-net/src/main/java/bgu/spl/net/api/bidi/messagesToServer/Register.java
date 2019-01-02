@@ -64,7 +64,7 @@ private boolean finished;//indicates if we have finished to read USERNAME
     public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
         //If user is already registered:
 
-        if(allUsers.checkIfRegistered(name)){
+        if(allUsers.checkIfRegistered(this.name)){
             System.out.println("User is already registered");
             connections.send(ConnectionID,new Error((short)1));//The constructed Error is the response to send back to this client.
         }

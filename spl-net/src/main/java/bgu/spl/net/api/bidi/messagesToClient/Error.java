@@ -11,6 +11,7 @@ public class Error extends BasicMessageToClient {
         super();
         this.type=type;
         setOpCode((short)11);
+        encode();
     }
 
     @Override

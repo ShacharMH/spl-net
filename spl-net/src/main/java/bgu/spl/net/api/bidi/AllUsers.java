@@ -29,7 +29,7 @@ public void logInAUser(String name, User user){
 
 public User getUserByName(String name) {
     return loggedInUsers.get(name);
-}
+}//
 
 public User getUserByConnectionId(int connectionId) {
     String name = IDsToNames.get(connectionId);

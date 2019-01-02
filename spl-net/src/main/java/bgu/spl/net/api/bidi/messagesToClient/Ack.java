@@ -1,5 +1,7 @@
 package bgu.spl.net.api.bidi.messagesToClient;
 
+import bgu.spl.net.api.bidi.messagesToServer.BasicMessageToServer;
+
 public class Ack extends BasicMessageToClient {
 
     private short type;
@@ -13,7 +15,7 @@ public class Ack extends BasicMessageToClient {
         encode();
     }
 
-    public Ack(short type,String message){}//For more complex messages like follow
+    public Ack(short type, byte[] optionalPart){}//For more complex messages like follow
 
     @Override
     public byte[] encode() {

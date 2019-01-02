@@ -3,7 +3,9 @@ package bgu.spl.net.api.bidi.messagesToServer;
 import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 import bgu.spl.net.api.bidi.Connections;
 import bgu.spl.net.api.bidi.AllUsers;
+import bgu.spl.net.api.bidi.messagesToClient.Ack;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
+import bgu.spl.net.api.bidi.messagesToClient.Ack;
 public class Logout extends BasicMessageToServer {
     @Override
     protected Object decode(byte nextByte) {
@@ -15,6 +17,8 @@ public class Logout extends BasicMessageToServer {
         if (!AllUsers.getInstance().checkIfLoggedIn(ConnectionID))//if user isn't logged in
             connections.send(ConnectionID,new Error((short)3));
         else{
+            AllUsers.getInstance().logOutAUser(ConnectionID);
+            connections.send(ConnectionID,new Ack((short)3));
 
         }
     }

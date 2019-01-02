@@ -8,7 +8,7 @@ import bgu.spl.net.api.bidi.messagesToClient.Ack;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
 
 import java.util.Collections;
-import java.util.Comparator;
+
 
 public class UserList extends BasicMessageToServer {
 

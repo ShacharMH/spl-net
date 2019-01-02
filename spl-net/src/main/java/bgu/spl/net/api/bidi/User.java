@@ -30,6 +30,10 @@ public class User {
         this.connectionID= new AtomicInteger(connectionID);
     }
 
+    public String getName(){
+        return name;
+    }
+
     public AtomicInteger getConnectionId() {
         return this.connectionID;
     }

@@ -59,8 +59,12 @@ public class User {
         return followers;
     }
 
-    public void addToNotifications(Notification notification) {
+    public void addToAwaitingNotifications(Notification notification) {
         AwaitingNotifications.add(notification);
+    }
+
+    public void savePost(Notification notification) {
+        sentPost.add(notification);
     }
 
 

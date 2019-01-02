@@ -44,7 +44,7 @@ loggedInUsers.remove(userName);
 
 public User getUserByName(String name) {
     return loggedInUsers.get(name);
-}//
+}
 
 public User getUserByConnectionId(int connectionId) {
     String name = IDsToNames.get(connectionId);

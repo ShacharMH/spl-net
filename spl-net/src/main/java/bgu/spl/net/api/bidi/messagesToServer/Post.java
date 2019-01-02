@@ -4,6 +4,7 @@ import bgu.spl.net.api.bidi.AllUsers;
 import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 import bgu.spl.net.api.bidi.Connections;
 import bgu.spl.net.api.bidi.User;
+import bgu.spl.net.api.bidi.messagesToClient.Ack;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
 import bgu.spl.net.api.bidi.messagesToClient.Notification;
 
@@ -45,8 +46,9 @@ public class Post extends BasicMessageToServer {
             return;
         }
 
-        // saving the Post in the relevant data structures:
-
+        // user:
+        String userName = allUsers.getName(ConnectionID);
+        User user = allUsers.getUserByConnectionId(ConnectionID);
 
         // initilizing the list of users to send post to to followers
         usersToSendPostTo = allUsers.getUserByConnectionId(ConnectionID).getFollowers();
@@ -64,15 +66,25 @@ public class Post extends BasicMessageToServer {
             }
         }
 
+
+        // preparing the notification:
+        Notification notification = new Notification((char)PostOpCode, allUsers.getName(ConnectionID), string);
+
+        // adding notification to relevant data structure:
+        allUsers.savePost(userName, notification);
+        user.savePost(notification);
+
         for (String name : usersToSendPostTo) {
             // if a user is logged in - we send him the message
             if (allUsers.checkIfLoggedIn(name)){
-                connections.send(allUsers.getConnectionId(name), new Notification((char)PostOpCode, allUsers.getName(ConnectionID), string));
+                connections.send(allUsers.getConnectionId(name), notification);
             } else { // if user is not logged in, we add a notification to its pending notif. list.
-                Notification notification = new Notification((char)PostOpCode, allUsers.getName(ConnectionID), string);
-                allUsers.getUserByName(name).addToNotifications(notification);
+                allUsers.getUserByName(name).addToAwaitingNotifications(notification);
             }
         }
+
+        // sending the ACK message
+        connections.send(ConnectionID, new Ack(PostOpCode));
 
     }
 

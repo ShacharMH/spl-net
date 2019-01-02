@@ -13,7 +13,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Follow extends BasicMessageToServer {
 
     private boolean sendErrorMessage;// changes to false once one of the un/follow succeeds.
-    private boolean isUserLoggedIn;
     private int index;
     private int userIndex;
     private int followOrUnfollow;
@@ -54,7 +53,7 @@ public class Follow extends BasicMessageToServer {
                 index++;
                 userIndex++;
             } else {
-                userName = new String(bytesNumOfUsers, 0, userIndex-1, StandardCharsets.UTF_8);
+                userName = new String(bytesUserName, 0, userIndex-1, StandardCharsets.UTF_8);
                 userNameList.add(userName);
                 index++;
                 userIndex = 0;
@@ -64,22 +63,28 @@ public class Follow extends BasicMessageToServer {
     }
 
     public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
-        if (!allUsers.checkIfLoggedIn(ConnectionID)) { // user isn't logged in - send an error message
+        // user isn't logged in/ userList id empty - send an error message:
+        if (!allUsers.checkIfLoggedIn(ConnectionID) || numOfUsers == 0) {
             connections.send(ConnectionID, new Error((short) 4));
             return;
         }
+        // user is logged in: send an error iff all follow/unfollow are unsuccessful.
         User user = allUsers.getUserByConnectionId(ConnectionID);
-        if (followOrUnfollow == 0) { // follow
+            int connectionId;
+            boolean success = false; // the success of each un/follow
             for (String tmp : userNameList) {
-
+                connectionId = allUsers.getConnectionId(tmp);
+                success = user.followOrUnfollow(followOrUnfollow, connectionId);
+                if (sendErrorMessage && success)
+                    sendErrorMessage = false;
             }
-        } else {
-
-        }
+            if (sendErrorMessage) {
+                connections.send(ConnectionID, new Error((short) 4));
+                return;
+            }
     }
 
-    private short bytesToShort ( byte[] byteArr)
-    {
+    private short bytesToShort (byte[] byteArr) {
         short result = (short) ((byteArr[0] & 0xff) << 8);
         result += (short) (byteArr[1] & 0xff);
         return result;

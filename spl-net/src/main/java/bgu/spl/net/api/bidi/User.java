@@ -27,19 +27,56 @@ public class User {
         this.connectionID= new AtomicInteger(connectionID);
     }
 
-    public boolean addToFollowing(int connectionId) {
+    public AtomicInteger getConnectionId() {
+        return this.connectionID;
+    }
+
+    public boolean followOrUnfollow(int followOrUnfollow, int connectionId) {
+        if (connectionId == 0)
+            return addToFollowing(connectionId);
+        return removeFromFollowing(connectionId);
+    }
+
+
+    private boolean addToFollowing(int connectionId) {
         if (following.contains(connectionId))
             return false;
         following.add(connectionId);
         return true;
     }
 
-    public boolean removeFromFollowing(int connectionId) {
+    private boolean removeFromFollowing(int connectionId) {
         if (!following.contains(connectionId))
             return false;
         following.remove(following.indexOf(connectionId));
         return true;
     }
+
+
+
+
+    private static class Pair {
+
+        String name;
+        AtomicInteger connId;
+
+        public Pair(String name, int connId) {
+            this.name = name;
+            this.connId = new AtomicInteger(connId);
+        }
+
+        public AtomicInteger getConnId() {
+            return connId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+
+    }
+
 }
+
 
 

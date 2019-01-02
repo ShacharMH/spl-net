@@ -1,10 +1,9 @@
 package bgu.spl.net.api.bidi;
 
-import com.sun.org.apache.xpath.internal.operations.String;
 
 import java.util.concurrent.ConcurrentHashMap;
 
- public  class  AllUsers {
+public  class  AllUsers {
 
      private static class HolderOfAllUsers{
          private static AllUsers allUsers= new AllUsers();
@@ -49,6 +48,10 @@ public boolean checkIfLoggedIn(int connectionId) {
 
 public String getName(int connectionId) {
     return IDsToNames.get(connectionId);
+}
+
+public int getConnectionId(String name) {
+    return registeredUsers.get(name).getConnectionId().intValue();
 }
 
 public boolean checkIfRegistered(String name){

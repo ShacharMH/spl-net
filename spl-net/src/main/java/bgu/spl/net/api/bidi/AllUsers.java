@@ -16,6 +16,8 @@ public  class  AllUsers {
     private ConcurrentHashMap<String, User> registeredUsers=new ConcurrentHashMap<>();//Users that have registered
     private ConcurrentHashMap<String, User> loggedInUsers=new ConcurrentHashMap<>();//Users that have logged in
     private ConcurrentHashMap<Integer, String> IDsToNames=new  ConcurrentHashMap<>();//Map between  a user's ID to his name
+    private ConcurrentHashMap<String, String> userPosts = new ConcurrentHashMap<>(); // map between users and their posts
+    private ConcurrentHashMap<String, String> userPMs = new ConcurrentHashMap<>(); // map between users and their PMs.
 
 
 public void registerUser(String name, User user){

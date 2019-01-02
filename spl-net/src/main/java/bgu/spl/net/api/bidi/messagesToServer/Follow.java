@@ -4,6 +4,7 @@ import bgu.spl.net.api.bidi.AllUsers;
 import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 import bgu.spl.net.api.bidi.Connections;
 import bgu.spl.net.api.bidi.User;
+import bgu.spl.net.api.bidi.messagesToClient.Ack;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
 
 import java.nio.charset.StandardCharsets;
@@ -22,9 +23,13 @@ public class Follow extends BasicMessageToServer {
     private String userName;
     private List<String> userNameList;
     private AllUsers allUsers;
+    private short numberOfSuccessfulFollowsOrUnfollows;
+    private List<String> namesOfSuccessfullFollowsOrUnfollows;
+    private short FollowOpCode;
 
     public Follow() {
         super();
+        allUsers = AllUsers.getInstance();
         this.sendErrorMessage = true;
         this.index = 0;
         this.followOrUnfollow = -1;
@@ -32,7 +37,10 @@ public class Follow extends BasicMessageToServer {
         this.bytesUserName = new byte[1<<10];
         this.userIndex = 0;
         this.userNameList = new CopyOnWriteArrayList<>();
-        allUsers = AllUsers.getInstance();
+        this.numberOfSuccessfulFollowsOrUnfollows = 0;
+        this.namesOfSuccessfullFollowsOrUnfollows = new CopyOnWriteArrayList<>();
+        this.FollowOpCode = 4;
+
     }
 
 
@@ -75,6 +83,10 @@ public class Follow extends BasicMessageToServer {
             for (String tmp : userNameList) {
                 connectionId = allUsers.getConnectionId(tmp);
                 success = user.followOrUnfollow(followOrUnfollow, connectionId);
+                if (success) {
+                    numberOfSuccessfulFollowsOrUnfollows++;
+                    namesOfSuccessfullFollowsOrUnfollows.add(tmp);
+                }
                 if (sendErrorMessage && success)
                     sendErrorMessage = false;
             }
@@ -82,11 +94,44 @@ public class Follow extends BasicMessageToServer {
                 connections.send(ConnectionID, new Error((short) 4));
                 return;
             }
+
+            encodeACKmessage(ConnectionID, connections);
     }
 
+    private void encodeACKmessage(int ConnectionID, Connections connections) {
+
+        // prepare ACK:
+        byte[] ACKmessage = new byte[1<<10];
+        // add number of successful un/follows to ACK
+        byte[] numberOfSuccessfulFollowsOrUnfollowsBytes = shortToBytes(numberOfSuccessfulFollowsOrUnfollows);
+        ACKmessage[0] = numberOfSuccessfulFollowsOrUnfollowsBytes[0];
+        ACKmessage[1] = numberOfSuccessfulFollowsOrUnfollowsBytes[1];
+        int index = 2;
+        // add all relevant user names
+        for (String name: namesOfSuccessfullFollowsOrUnfollows) {
+            byte[] nameInBytes = name.getBytes();
+            for (int i = 0; i < nameInBytes.length; i++) {
+                ACKmessage[index] = nameInBytes[i];
+                index++;
+            }
+            ACKmessage[index] = 0;
+            index++;
+        }
+
+        // send to ACK message to complete
+        connections.send(ConnectionID, new Ack(FollowOpCode, ACKmessage));
+
+    }
     private short bytesToShort (byte[] byteArr) {
         short result = (short) ((byteArr[0] & 0xff) << 8);
         result += (short) (byteArr[1] & 0xff);
         return result;
+    }
+
+    public byte[] shortToBytes(short num) {
+        byte[] bytesArr = new byte[2];
+        bytesArr[0] = (byte)((num >> 8) & 0xFF);
+        bytesArr[1] = (byte)(num & 0xFF);
+        return bytesArr;
     }
 }

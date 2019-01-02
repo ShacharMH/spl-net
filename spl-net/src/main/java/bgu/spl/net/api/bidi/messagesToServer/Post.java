@@ -87,8 +87,4 @@ public class Post extends BasicMessageToServer {
         connections.send(ConnectionID, new Ack(PostOpCode));
 
     }
-
-    private void encodeACKmesage(int ConnectionId, Connections connections) {
-        return;
-    }
 }

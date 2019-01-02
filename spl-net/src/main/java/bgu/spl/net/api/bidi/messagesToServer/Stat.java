@@ -19,14 +19,14 @@ public class Stat extends BasicMessageToServer {
     private User user;
     private byte[] ACKmessage;
 
-
     public Stat() {
         super();
         this.index = 0;
         this.nameInBytes = new byte[1<<10];
-        toAdd = new byte[2];
-        allUsers = AllUsers.getInstance();
+        this.toAdd = new byte[2];
+        this.allUsers = AllUsers.getInstance();
         this.StatOpCode = 8;
+        this.ACKmessage = new byte[1<<10];
     }
 
     protected Object decode(byte nextByte) {

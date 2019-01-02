@@ -56,7 +56,7 @@ public class Follow extends BasicMessageToServer {
             index++;
             numOfUsers = bytesToShort(bytesNumOfUsers);
         } else {
-            if (nextByte != 0 && index > 2) {
+            if (nextByte != '\0' && index > 2) {
                 bytesUserName[userIndex] = nextByte;
                 index++;
                 userIndex++;
@@ -81,8 +81,7 @@ public class Follow extends BasicMessageToServer {
             int connectionId;
             boolean success = false; // the success of each un/follow
             for (String tmp : userNameList) {
-                connectionId = allUsers.getConnectionId(tmp);
-                success = user.followOrUnfollow(followOrUnfollow, connectionId);
+                success = user.followOrUnfollow(followOrUnfollow, tmp);
                 if (success) {
                     numberOfSuccessfulFollowsOrUnfollows++;
                     namesOfSuccessfullFollowsOrUnfollows.add(tmp);

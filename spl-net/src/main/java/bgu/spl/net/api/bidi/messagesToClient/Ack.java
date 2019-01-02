@@ -19,7 +19,7 @@ public class Ack extends BasicMessageToClient {
     public Ack(short type, byte[] optionalPart){
         new Ack(type);
         addOptionalPart(optionalPart);
-    }//For more complex messages like follow
+    }
 
     @Override
     public byte[] encode() {
@@ -36,7 +36,10 @@ public class Ack extends BasicMessageToClient {
 
     private void addOptionalPart(byte[] optionalPart) {
         int ACKindex = ACKmessage.length -1;
-        int opti
+        for (int i = 0; i < optionalPart.length; i++) {
+            ACKmessage[ACKindex] = optionalPart[i];
+            ACKindex++;
+        }
     }
 }
 

@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 
 import bgu.spl.net.api.bidi.User;
 import bgu.spl.net.api.bidi.messagesToClient.Ack;
-
+import bgu.spl.net.api.bidi.messagesToClient.Notification;
 
 
 public class Login extends BasicMessageToServer {
@@ -75,10 +75,15 @@ public class Login extends BasicMessageToServer {
             connections.send(ConnectionID,new Error((short)2));//The constructed Error is the response to send back to this client.
         }
         else {//*********NEED TO DEAL WITH MESSAGES HE RECIEVED BEFORE HE LOGGED IN AKA PENDING MESSAGES
-            User user=new User(name,password);
+            User user=allUsers.getRegisteredUsers().get(name);
             user.setConnectionID(ConnectionID);
             allUsers.logInAUser(name,user);
             allUsers.MapConnection(ConnectionID,name);
+            //before client recieves Ack message, he first recieves all of the notifications he was sent while he was offline.
+            if(!user.getAwaitingNotifications().isEmpty()) {
+                for (Notification notification : user.getAwaitingNotifications())
+                    connections.send(ConnectionID, notification);
+            }
             connections.send(ConnectionID,new Ack((short)2)); //Succesfull log in, Ack is the message sent back to the client
         }
 

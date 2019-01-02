@@ -12,8 +12,8 @@ public class User {
     private List<String> followers;//list of followers of this user
     private List<String> following;//list of users that the user is following
     private List<Notification> AwaitingNotifications;// NEED TO IMPLEMENT NOTIFICATION
-    private List<Notification> sentPM;
-    private List<Notification> sentPost;
+    private List<Notification> sentPMs;
+    private List<Notification> sentPosts;
 
 
     public User(String name,String password){
@@ -85,12 +85,28 @@ public class User {
         return followers;
     }
 
+    public List<String> getFollowing() {
+        return following;
+    }
+
+    public int getNumOfFollowing() {
+        return following.size();
+    }
+
+    public int getNumOfFollowers() {
+        return followers.size();
+    }
+
     public void addToAwaitingNotifications(Notification notification) {
         AwaitingNotifications.add(notification);
     }
 
     public void savePost(Notification notification) {
-        sentPost.add(notification);
+        sentPosts.add(notification);
+    }
+
+    public int getNumOfPosts() {
+        return sentPosts.size();
     }
 
 

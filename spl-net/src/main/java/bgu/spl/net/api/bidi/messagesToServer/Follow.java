@@ -73,7 +73,7 @@ public class Follow extends BasicMessageToServer {
     public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
         // user isn't logged in/ userList id empty - send an error message:
         if (!allUsers.checkIfLoggedIn(ConnectionID) || numOfUsers == 0) {
-            connections.send(ConnectionID, new Error((short) 4));
+            connections.send(ConnectionID, new Error(FollowOpCode));
             return;
         }
         // user is logged in: send an error iff all follow/unfollow are unsuccessful.

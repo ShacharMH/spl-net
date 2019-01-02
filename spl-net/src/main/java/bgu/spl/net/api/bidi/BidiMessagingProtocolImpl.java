@@ -35,4 +35,8 @@ connections object send function.
         return shouldTerminate;
     }
 
+    public void changeShouldTerminateTo(boolean shouldTerminate){
+        this.shouldTerminate = shouldTerminate;
+    }
+
 }

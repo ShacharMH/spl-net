@@ -5,7 +5,7 @@ import bgu.spl.net.api.bidi.messagesToServer.BasicMessageToServer;
 public class Ack extends BasicMessageToClient {
 
     private short type;
-
+    byte[] ACKmessage;
 
 
     public Ack(short type){
@@ -16,7 +16,10 @@ public class Ack extends BasicMessageToClient {
         encode();
     }
 
-    public Ack(short type, byte[] optionalPart){}//For more complex messages like follow
+    public Ack(short type, byte[] optionalPart){
+        new Ack(type);
+        addOptionalPart(optionalPart);
+    }//For more complex messages like follow
 
     @Override
     public byte[] encode() {
@@ -27,8 +30,13 @@ public class Ack extends BasicMessageToClient {
         additions=shortToBytes(type);//translation of the MessageOpCode
         returnValue[2]=additions[0];
         returnValue[3]=additions[1];
-
+        ACKmessage = returnValue;
         return returnValue;
-    };
+    }
+
+    private void addOptionalPart(byte[] optionalPart) {
+        int ACKindex = ACKmessage.length -1;
+        int opti
+    }
 }
 

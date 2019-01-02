@@ -1,7 +1,9 @@
 package bgu.spl.net.api.bidi;
 
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public  class  AllUsers {
 
@@ -13,7 +15,7 @@ public  class  AllUsers {
          return HolderOfAllUsers.allUsers;
      }
 
-    private ConcurrentHashMap<String, User> registeredUsers=new ConcurrentHashMap<>();//Users that have registered
+    private List<Pair> registeredUsers = new CopyOnWriteArrayList<>();
     private ConcurrentHashMap<String, User> loggedInUsers=new ConcurrentHashMap<>();//Users that have logged in
     private ConcurrentHashMap<Integer, String> IDsToNames=new  ConcurrentHashMap<>();//Map between  a user's ID to his name
     private ConcurrentHashMap<String, String> userPosts = new ConcurrentHashMap<>(); // map between users and their posts
@@ -21,7 +23,7 @@ public  class  AllUsers {
 
 
 public void registerUser(String name, User user){
-        registeredUsers.put(name,user);
+        registeredUsers.add(new Pair(name, user));
     }
 
 public void logInAUser(String name, User user){
@@ -50,7 +52,7 @@ public void MapConnection(Integer connectionNum, String userName){
 public boolean checkIfLoggedIn(int connectionId) {
     String name = getName(connectionId);
     if (name != null)
-        return checkIfLoggedIn(connectionId);
+        return loggedInUsers.get(name) != null;
     throw new RuntimeException("connectionId is not found in IDsToNames hash map");
 }
 
@@ -59,19 +61,34 @@ public String getName(int connectionId) {
 }
 
 public int getConnectionId(String name) {
-    return registeredUsers.get(name).getConnectionId().intValue();
+    return loggedInUsers.get(name).getConnectionId().intValue();
 }
 
 public boolean checkIfRegistered(String name){
-    return registeredUsers.containsKey(name);
+    for (Pair pair : registeredUsers) {
+        if (pair.equals(name))
+            return true;
+    }
+    return false;
 }
 
-
-
-public ConcurrentHashMap<String, User> getRegisteredUsers(){
+public List<Pair> getRegisteredUsers(){
     return registeredUsers;
 }
 
+private static class Pair {
 
+    String name;
+    User user;
+
+    public Pair(String name, User user) {
+        this.name = name;
+        this.user = user;
+    }
+
+    public boolean equals(String name) {
+        return this.name == name;
+    }
+}
 
 }

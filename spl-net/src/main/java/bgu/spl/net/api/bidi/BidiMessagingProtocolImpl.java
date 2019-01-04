@@ -1,5 +1,7 @@
 package bgu.spl.net.api.bidi;
 
+import bgu.spl.net.api.bidi.messagesToServer.BasicMessageToServer;
+
 /* – This interface replaces the MessagingProtocol interface.
 It exists to support peer 2 peer messaging via the Connections interface.
  */
@@ -25,7 +27,7 @@ message. Unlike MessagingProtocol, responses are sent via the
 connections object send function.
      */
     public void process(T message){
-        return;
+        ((BasicMessageToServer)message).process(connectionId, connections, this);
     }
 
     /**

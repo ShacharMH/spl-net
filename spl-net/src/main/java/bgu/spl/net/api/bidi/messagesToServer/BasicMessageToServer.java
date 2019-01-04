@@ -10,7 +10,7 @@ public abstract class BasicMessageToServer {
 
     protected abstract Object decode(byte nextByte);
 
-    protected abstract void process(int ConnectionID, Connections connections,BidiMessagingProtocol bidiMessagingProtocol);
+    public abstract void process(int ConnectionID, Connections connections,BidiMessagingProtocol bidiMessagingProtocol);
 
     public byte[] shortToBytes(short input){
         byte[] bytes=new byte[2];

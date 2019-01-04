@@ -59,7 +59,7 @@ public class Login extends BasicMessageToServer {
 
 
     @Override
-    protected void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
+    public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
         AllUsers allUsers=AllUsers.getInstance();
 
         if(!allUsers.checkIfRegistered(name)) {//if user does not exist AKA has not registered

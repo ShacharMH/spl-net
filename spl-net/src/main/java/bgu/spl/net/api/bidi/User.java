@@ -105,6 +105,10 @@ public class User {
         sentPosts.add(notification);
     }
 
+    public void savePM(Notification notification) {
+        sentPMs.add(notification);
+    }
+
     public int getNumOfPosts() {
         return sentPosts.size();
     }

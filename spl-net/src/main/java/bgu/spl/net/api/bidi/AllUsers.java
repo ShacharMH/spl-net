@@ -92,5 +92,11 @@ public void savePost(String name, Notification notification) {
     allPosts.get(name).add(notification);
 }
 
+public void savePM(String name, Notification notification) {
+    if (allPMs.get(name) == null) {
+        allPMs.put(name, new CopyOnWriteArrayList<>());
+    }
+    allPMs.get(name).add(notification);
+}
 
 }

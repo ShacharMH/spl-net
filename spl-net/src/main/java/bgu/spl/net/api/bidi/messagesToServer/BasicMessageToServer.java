@@ -6,9 +6,9 @@ import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 public abstract class BasicMessageToServer {
 
 
-    protected BasicMessageToServer(){}
+    public BasicMessageToServer(){}
 
-    protected abstract Object decode(byte nextByte);
+    public abstract Object decode(byte nextByte);
 
     public abstract void process(int ConnectionID, Connections connections,BidiMessagingProtocol bidiMessagingProtocol);
 

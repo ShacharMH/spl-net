@@ -1,7 +1,5 @@
 package bgu.spl.net.api.bidi.messagesToClient;
 
-import bgu.spl.net.api.bidi.messagesToServer.BasicMessageToServer;
-
 public class Ack extends BasicMessageToClient {
 
     private short type;
@@ -13,7 +11,6 @@ public class Ack extends BasicMessageToClient {
         super();
         setOpCode((short)10);
         this.type=type;
-        setOpCode((short)10);
     }
 
     public Ack(short type, byte[] optionalPart){

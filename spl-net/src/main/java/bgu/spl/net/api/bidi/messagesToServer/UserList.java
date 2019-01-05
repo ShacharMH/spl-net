@@ -17,12 +17,12 @@ public class UserList extends BasicMessageToServer {
         super();
     }
     @Override
-    protected Object decode(byte nextByte) {
+    public Object decode(byte nextByte) {
         return this;
     }
 
     @Override
-    protected void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
+    public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
         if (!AllUsers.getInstance().checkIfLoggedIn(ConnectionID)) {//if sending user isn't logged in
             connections.send(ConnectionID, new Error((short) 7));
         }

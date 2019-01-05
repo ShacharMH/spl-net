@@ -65,9 +65,10 @@ public class Follow extends BasicMessageToServer {
                 userNameList.add(userName);
                 index++;
                 userIndex = 0;
+                return this;
             }
         }
-        return this;
+        return null;
     }
 
     public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {

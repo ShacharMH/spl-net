@@ -24,24 +24,21 @@ public class ConnectionsImpl<T> implements Connections<T> {
     }
 
     public void addToConnectedUsers(ConnectionHandler connectionHandler) {
-        connectedUsers.put(connectionId, connectionHandler);
+        connectedUsers.putIfAbsent(connectionId, connectionHandler);
         connectionId.incrementAndGet();
     }
 
     /* sends a message T to client represented by the given connId
      */
     public boolean send(int connectionId, T msg) {
-        if (checkIfContains(connectionId)) {
-            connectedUsers.get(new AtomicInteger(connectionId)).send(msg);
-            return true;
+        ConnectionHandler connectionHandler = connectedUsers.get(new AtomicInteger(connectionId));
+        synchronized (connectionHandler) {
+            if (connectionHandler != null) {
+                connectionHandler.send(msg);
+                return true;
+            }
+            return false;
         }
-        return false;
-    }
-
-    private boolean checkIfContains(int connectionId) {
-        if (connectedUsers.contains(new AtomicInteger(connectionId)))
-            return true;
-        return false;
     }
 
     /* sends a message T to all active clients. This
@@ -56,7 +53,6 @@ implemenration, not the protocol!.
     /* removes active client connId from map.
      */
     public void disconnect(int connectionId) {
-        if (checkIfContains(connectionId))
-            connectedUsers.remove(new AtomicInteger(connectionId));
+        connectedUsers.remove(new AtomicInteger(connectionId));
     }
 }

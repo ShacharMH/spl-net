@@ -49,6 +49,8 @@ public class Reactor<T> implements Server<T> {
 
 	// additions:
         this.connections = new ConnectionsImpl();
+        //
+
         try (Selector selector = Selector.open(); // we initiate the selector
                 ServerSocketChannel serverSock = ServerSocketChannel.open()) { // and also initiate the server socket.
 
@@ -118,6 +120,7 @@ public class Reactor<T> implements Server<T> {
         //additions:
         connections.addToConnectedUsers((bgu.spl.net.srv.bidi.ConnectionHandler)handler);
         connectionId++;
+        //
     }
 
     private void handleReadWrite(SelectionKey key) {

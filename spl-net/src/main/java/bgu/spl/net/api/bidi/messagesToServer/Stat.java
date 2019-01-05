@@ -29,17 +29,18 @@ public class Stat extends BasicMessageToServer {
         this.ACKmessage = new byte[1<<10];
     }
 
-    protected Object decode(byte nextByte) {
+    public Object decode(byte nextByte) {
         if (nextByte == '\0') {
-            name = new String(nameInBytes, 0, index-1, StandardCharsets.UTF_8);
+            name = new String(nameInBytes, 0, index, StandardCharsets.UTF_8);
+            return this;
         } else {
             nameInBytes[index] = nextByte;
             index++;
         }
-        return this;
+        return null;
     }
 
-    protected void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
+    public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
         if (!allUsers.checkIfLoggedIn(ConnectionID)) {
             connections.send(ConnectionID, new Error(StatOpCode));
             return;

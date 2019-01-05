@@ -65,7 +65,8 @@ public class Follow extends BasicMessageToServer {
                 userNameList.add(userName);
                 index++;
                 userIndex = 0;
-                return this;
+                if (userNameList.size() == numOfUsers)
+                    return this;
             }
         }
         return null;

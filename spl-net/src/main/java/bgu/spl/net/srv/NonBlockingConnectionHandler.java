@@ -3,6 +3,7 @@ package bgu.spl.net.srv;
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
 import bgu.spl.net.api.bidi.Connections;
+import bgu.spl.net.api.bidi.ConnectionsExtention;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -22,9 +23,12 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
     private final SocketChannel chan;
     private final Reactor reactor; /* so the NonBlockingConnectionHandler is used ONLY with the reactor,
                                       and not with the threadPerClient implementation */
+    // additions:
+    private int connectionId;
+    private ConnectionsExtention connections;
 
     public NonBlockingConnectionHandler(
-            Connections connections, int connectionId, MessageEncoderDecoder<T> reader,
+            ConnectionsExtention connections, int connectionId, MessageEncoderDecoder<T> reader,
             MessagingProtocol<T> protocol,
             SocketChannel chan,
             Reactor reactor) {
@@ -32,6 +36,8 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
         this.encdec = reader;
         this.protocol = protocol;
         this.reactor = reactor;
+        this.connectionId = connectionId;
+        this.connections = connections;
     }
 
     public Runnable continueRead() {

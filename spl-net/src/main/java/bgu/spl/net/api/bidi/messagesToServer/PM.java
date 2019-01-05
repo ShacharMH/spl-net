@@ -29,20 +29,21 @@ public class PM extends BasicMessageToServer {
         this.stringName = null;
     }
 
-    public Object decode(byte nexyByte) {
-        if (nexyByte == '0' && this.stringName != null) {
+    public Object decode(byte nextByte) {
+        if (nextByte == '\0' && this.stringName != null) { // finished reading the whole message.
             this.stringMessage = new String(message, 0, index-1, StandardCharsets.UTF_8);
-        } else if(nexyByte == '0' && this.stringMessage == null) {
+            return this;
+        } else if(nextByte == '\0' && this.stringMessage == null) { // finished reading name
             this.stringName = new String(name, 0 , index-1, StandardCharsets.UTF_8);
             index = 0;
-        } else if(stringName == null) {
-            name[index] = nexyByte;
+        } else if(stringName == null) { // & nextByte != 0
+            name[index] = nextByte;
             index++;
-        } else { // stringName != null
-            message[index] = nexyByte;
+        } else { // stringName != null & nextByte != 0
+            message[index] = nextByte;
             index++;
         }
-        return this;
+        return null;
     }
 
     @Override
@@ -56,10 +57,13 @@ public class PM extends BasicMessageToServer {
             connections.send(ConnectionID, new Error(PmOpCode));
             return;
         }
-        Notification notification = new Notification('6', allUsers.getName(ConnectionID),stringMessage);
+        Notification notification = new Notification('6', stringName, stringMessage);
         allUsers.getUserByConnectionId(ConnectionID).savePM(notification);
-        allUsers.savePM(stringName, notification);
-        connections.send(allUsers.getConnectionId(stringName),notification);
+        allUsers.savePM(allUsers.getName(ConnectionID), notification);
+        if (allUsers.checkIfLoggedIn(stringName))
+            connections.send(allUsers.getConnectionId(stringName),notification);
+        else
+            allUsers.getUserByName(stringName).addToAwaitingNotifications(notification);
         connections.send(ConnectionID, new Ack(PmOpCode));
     }
 

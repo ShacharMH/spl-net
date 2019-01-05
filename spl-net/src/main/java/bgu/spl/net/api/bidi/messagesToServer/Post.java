@@ -28,18 +28,18 @@ public class Post extends BasicMessageToServer {
         allUsers = AllUsers.getInstance();
     }
 
-    protected Object decode(byte nextByte) {
+    public Object decode(byte nextByte) {
         if (nextByte != '\0') {
             bytes[index] = nextByte;
             index++;
         } else {
-            bytes[index] = nextByte;
             string = new String(bytes, 0, index, StandardCharsets.UTF_8);
+            return this;
         }
-        return this;
+        return null;
     }
 
-    protected void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
+    public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
         // check if user is logged in, if not - send an error
         if (!allUsers.checkIfLoggedIn(ConnectionID)) {
             connections.send(ConnectionID, new Error(PostOpCode));
@@ -60,7 +60,7 @@ public class Post extends BasicMessageToServer {
             if ((tmp.substring(0,1)).equals("@")) {
                 String name = tmp.substring(1);
                 // adding tagged users to users to send post to
-                if (!usersToSendPostTo.contains(name) & allUsers.checkIfRegistered(name))
+                if (!usersToSendPostTo.contains(name) && allUsers.checkIfRegistered(name))
                     usersToSendPostTo.add(name);
                 taggedUsers.add(name);
             }

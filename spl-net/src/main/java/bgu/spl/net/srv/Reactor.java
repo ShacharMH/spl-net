@@ -2,6 +2,9 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.bidi.ConnectionsExtention;
+import bgu.spl.net.api.bidi.ConnectionsImpl;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedSelectorException;
@@ -19,9 +22,11 @@ public class Reactor<T> implements Server<T> {
     private final Supplier<MessageEncoderDecoder<T>> readerFactory;
     private final ActorThreadPool pool;
     private Selector selector;
-
     private Thread selectorThread;
     private final ConcurrentLinkedQueue<Runnable> selectorTasks = new ConcurrentLinkedQueue<>();
+    // additions:
+    private int connectionId;
+    private ConnectionsExtention connections;
 
     public Reactor(
             int numThreads,
@@ -33,11 +38,17 @@ public class Reactor<T> implements Server<T> {
         this.port = port;
         this.protocolFactory = protocolFactory;
         this.readerFactory = readerFactory;
+
+        // additions:
+        connectionId = 0;
     }
 
     @Override
     public void serve() {
 	selectorThread = Thread.currentThread();
+
+	// additions:
+        this.connections = new ConnectionsImpl();
         try (Selector selector = Selector.open(); // we initiate the selector
                 ServerSocketChannel serverSock = ServerSocketChannel.open()) { // and also initiate the server socket.
 
@@ -95,12 +106,18 @@ public class Reactor<T> implements Server<T> {
     private void handleAccept(ServerSocketChannel serverChan, Selector selector) throws IOException {
         SocketChannel clientChan = serverChan.accept();
         clientChan.configureBlocking(false);
-        final NonBlockingConnectionHandler<T> handler = new NonBlockingConnectionHandler<>(
+        final NonBlockingConnectionHandler<T> handler = new NonBlockingConnectionHandler<T>(
+                connections,
+                connectionId,
                 readerFactory.get(),
                 protocolFactory.get(),
                 clientChan,
                 this);
         clientChan.register(selector, SelectionKey.OP_READ, handler);
+
+        //additions:
+        connections.addToConnectedUsers((bgu.spl.net.srv.bidi.ConnectionHandler)handler);
+        connectionId++;
     }
 
     private void handleReadWrite(SelectionKey key) {

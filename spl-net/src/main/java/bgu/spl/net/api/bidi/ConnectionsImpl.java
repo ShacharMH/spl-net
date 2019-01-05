@@ -13,7 +13,7 @@ This interface should map a unique ID for each active client
 connected to the server
 
  */
-public class ConnectionsImpl<T> implements Connections<T> {
+public class ConnectionsImpl<T> implements ConnectionsExtention<T> {
 
     private ConcurrentHashMap<AtomicInteger, ConnectionHandler> connectedUsers;
     private AtomicInteger connectionId;
@@ -36,6 +36,8 @@ public class ConnectionsImpl<T> implements Connections<T> {
             if (connectionHandler != null) {
                 connectionHandler.send(msg);
                 return true;
+            } else { // assuming that if someone uses send, then the user is logged in
+
             }
             return false;
         }

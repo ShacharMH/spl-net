@@ -31,7 +31,7 @@ public class Login extends BasicMessageToServer {
     }
 
     @Override
-    protected Object decode(byte nextByte) {
+    public Object decode(byte nextByte) {
         if(!finished) {//if we aren't finished reading the USERNAME
             if (nextByte != 0) {
                 bytes[indexOfUserName] = nextByte;

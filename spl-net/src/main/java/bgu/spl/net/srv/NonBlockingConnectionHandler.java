@@ -2,6 +2,7 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.bidi.Connections;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -23,7 +24,7 @@ public class NonBlockingConnectionHandler<T> implements ConnectionHandler<T> {
                                       and not with the threadPerClient implementation */
 
     public NonBlockingConnectionHandler(
-            MessageEncoderDecoder<T> reader,
+            Connections connections, int connectionId, MessageEncoderDecoder<T> reader,
             MessagingProtocol<T> protocol,
             SocketChannel chan,
             Reactor reactor) {

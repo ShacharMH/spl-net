@@ -51,7 +51,7 @@ public class MessageEncoderDecoderImpl implements MessageEncoderDecoder {
         else if (message instanceof Ack)
             return ((Ack)message).encode();
         else
-            throw new RuntimeException("message type does not have an encode function");
+            throw new RuntimeException("message type does not have an encode function");//
     }
 
     private short bytesToShort ( byte[] byteArr) {

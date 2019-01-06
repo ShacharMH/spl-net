@@ -1,10 +1,8 @@
 package bgu.spl.net.api.bidi.messagesToServer;
 
 import java.nio.charset.StandardCharsets;
-import bgu.spl.net.api.bidi.AllUsers;
-import bgu.spl.net.api.bidi.Connections;
-import bgu.spl.net.api.bidi.BidiMessagingProtocol;
-import bgu.spl.net.api.bidi.User;
+
+import bgu.spl.net.api.bidi.*;
 import bgu.spl.net.api.bidi.messagesToClient.Ack;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
 
@@ -61,7 +59,7 @@ private boolean finished;//indicates if we have finished to read USERNAME
 
 
     @Override
-    public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
+    public void process(int ConnectionID, ConnectionsImpl connections, myBidiMessagingProtocol bidiMessagingProtocol) {
         //If user is already registered:
 
         if(allUsers.checkIfRegistered(this.name)){

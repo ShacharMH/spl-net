@@ -2,6 +2,9 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
+import bgu.spl.net.api.bidi.ConnectionsImpl;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,6 +16,8 @@ public abstract class BaseServer<T> implements Server<T> {
     private final Supplier<MessagingProtocol<T>> protocolFactory;
     private final Supplier<MessageEncoderDecoder<T>> encdecFactory;
     private ServerSocket sock;
+    //additions
+    private ConnectionsImpl connections;
 
     public BaseServer(
             int port,
@@ -23,6 +28,8 @@ public abstract class BaseServer<T> implements Server<T> {
         this.protocolFactory = protocolFactory;
         this.encdecFactory = encdecFactory;
 		this.sock = null;
+		// additions;
+		this.connections = new ConnectionsImpl();
     }
 
     @Override
@@ -38,11 +45,15 @@ public abstract class BaseServer<T> implements Server<T> {
                 Socket clientSock = serverSock.accept(); /* here we take the (client) socket that wants to register at the server,
                                                             and save it in the Socket clientSocket.*/
 
-                BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<>(
+                BlockingConnectionHandler<T> handler = new BlockingConnectionHandler<T>(
+                        //additions
+                        connections,
                         clientSock,
                         encdecFactory.get(),
-                        protocolFactory.get());
+                        (BidiMessagingProtocolImpl<T>) protocolFactory.get());
                 /* we then build a handler with that clientSocket, a copy of the protocol, and a copy of the encoder-decoder */
+                // now we need to add the connection handler to connected users:
+                connections.addToConnectedUsers((bgu.spl.net.srv.bidi.ConnectionHandler)handler);
 
                 execute(handler); /* then, we execute the handler (in a different thread */
             }

@@ -2,7 +2,8 @@ package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
 import bgu.spl.net.api.MessagingProtocol;
-import bgu.spl.net.api.bidi.ConnectionsExtention;
+import bgu.spl.net.api.bidi.BidiMessagingProtocol;
+import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.ConnectionsImpl;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.function.Supplier;
 public class Reactor<T> implements Server<T> {
 
     private final int port;
-    private final Supplier<MessagingProtocol<T>> protocolFactory;
+    private final Supplier<BidiMessagingProtocol<T>> protocolFactory;
     private final Supplier<MessageEncoderDecoder<T>> readerFactory;
     private final ActorThreadPool pool;
     private Selector selector;
@@ -26,12 +27,12 @@ public class Reactor<T> implements Server<T> {
     private final ConcurrentLinkedQueue<Runnable> selectorTasks = new ConcurrentLinkedQueue<>();
     // additions:
     private int connectionId;
-    private ConnectionsExtention connections;
+    private ConnectionsImpl connections;
 
     public Reactor(
             int numThreads,
             int port,
-            Supplier<MessagingProtocol<T>> protocolFactory,
+            Supplier<BidiMessagingProtocol<T>> protocolFactory,
             Supplier<MessageEncoderDecoder<T>> readerFactory) {
 
         this.pool = new ActorThreadPool(numThreads);
@@ -112,7 +113,7 @@ public class Reactor<T> implements Server<T> {
                 connections,
                 connectionId,
                 readerFactory.get(),
-                protocolFactory.get(),
+                (BidiMessagingProtocolImpl<T>) protocolFactory.get(),
                 clientChan,
                 this);
         clientChan.register(selector, SelectionKey.OP_READ, handler);

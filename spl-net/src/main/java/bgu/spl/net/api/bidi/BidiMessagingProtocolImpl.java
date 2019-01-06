@@ -5,10 +5,10 @@ import bgu.spl.net.api.bidi.messagesToServer.BasicMessageToServer;
 /* – This interface replaces the MessagingProtocol interface.
 It exists to support peer 2 peer messaging via the Connections interface.
  */
-public class BidiMessagingProtocolImpl<T> implements BidiMessagingProtocol<T> {
+public class BidiMessagingProtocolImpl<T> implements myBidiMessagingProtocol<T> {
 
     /* fields */
-    private Connections<T> connections;
+    private ConnectionsImpl<T> connections;
     private int connectionId;
     private boolean shouldTerminate;
 
@@ -17,7 +17,7 @@ public class BidiMessagingProtocolImpl<T> implements BidiMessagingProtocol<T> {
     /* initiate the protocol with the active connections structure of the server and saves the
 owner client’s connection id.
      */
-    public void start(int connectionId, Connections<T> connections){
+    public void start(int connectionId, ConnectionsImpl<T> connections){
         this.connectionId = connectionId;
         this.connections = connections;
         this.shouldTerminate = false;

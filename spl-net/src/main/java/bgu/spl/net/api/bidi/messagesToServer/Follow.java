@@ -1,9 +1,6 @@
 package bgu.spl.net.api.bidi.messagesToServer;
 
-import bgu.spl.net.api.bidi.AllUsers;
-import bgu.spl.net.api.bidi.BidiMessagingProtocol;
-import bgu.spl.net.api.bidi.Connections;
-import bgu.spl.net.api.bidi.User;
+import bgu.spl.net.api.bidi.*;
 import bgu.spl.net.api.bidi.messagesToClient.Ack;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
 
@@ -72,7 +69,7 @@ public class Follow extends BasicMessageToServer {
         return null;
     }
 
-    public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
+    public void process(int ConnectionID, ConnectionsImpl connections, myBidiMessagingProtocol bidiMessagingProtocol) {
         // user isn't logged in/ userList id empty - send an error message:
         if (!allUsers.checkIfLoggedIn(ConnectionID) || numOfUsers == 0) {
             connections.send(ConnectionID, new Error(FollowOpCode));

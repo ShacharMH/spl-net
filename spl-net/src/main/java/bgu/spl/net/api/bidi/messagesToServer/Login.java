@@ -53,7 +53,7 @@ public class Login extends BasicMessageToServer {
 
 
     @Override
-    public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
+    public void process(int ConnectionID, ConnectionsImpl connections, myBidiMessagingProtocol bidiMessagingProtocol) {
         AllUsers allUsers=AllUsers.getInstance();
 
         if(!allUsers.checkIfRegistered(name)) {//if user does not exist AKA has not registered
@@ -74,11 +74,12 @@ public class Login extends BasicMessageToServer {
             allUsers.logInAUser(name,user);
             allUsers.MapConnection(ConnectionID,name);
             //before client recieves Ack message, he first recieves all of the notifications he was sent while he was offline.
+            connections.send(ConnectionID,new Ack((short)2)); //Succesfull log in, Ack is the message sent back to the client
             if(!user.getAwaitingNotifications().isEmpty()) {
                 for (Notification notification : user.getAwaitingNotifications())
                     connections.send(ConnectionID, notification);
             }
-            connections.send(ConnectionID,new Ack((short)2)); //Succesfull log in, Ack is the message sent back to the client
+
         }
 
 

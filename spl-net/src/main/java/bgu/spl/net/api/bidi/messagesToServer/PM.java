@@ -1,8 +1,6 @@
 package bgu.spl.net.api.bidi.messagesToServer;
 
-import bgu.spl.net.api.bidi.AllUsers;
-import bgu.spl.net.api.bidi.BidiMessagingProtocol;
-import bgu.spl.net.api.bidi.Connections;
+import bgu.spl.net.api.bidi.*;
 import bgu.spl.net.api.bidi.messagesToClient.Ack;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
 import bgu.spl.net.api.bidi.messagesToClient.Notification;
@@ -47,7 +45,7 @@ public class PM extends BasicMessageToServer {
     }
 
     @Override
-    public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
+    public void process(int ConnectionID, ConnectionsImpl connections, myBidiMessagingProtocol bidiMessagingProtocol) {
         /* send an error if:
         1. sending user in not logged in (connectionId)
         2. recipient (user name) is not registered.

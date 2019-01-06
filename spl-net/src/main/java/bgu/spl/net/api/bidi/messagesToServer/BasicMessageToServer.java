@@ -1,6 +1,8 @@
 package bgu.spl.net.api.bidi.messagesToServer;
 import bgu.spl.net.api.bidi.Connections;
 import bgu.spl.net.api.bidi.BidiMessagingProtocol;
+import bgu.spl.net.api.bidi.ConnectionsImpl;
+import bgu.spl.net.api.bidi.myBidiMessagingProtocol;
 
 
 public abstract class BasicMessageToServer {
@@ -10,7 +12,7 @@ public abstract class BasicMessageToServer {
 
     public abstract Object decode(byte nextByte);
 
-    public abstract void process(int ConnectionID, Connections connections,BidiMessagingProtocol bidiMessagingProtocol);
+    public abstract void process(int ConnectionID, ConnectionsImpl connections, myBidiMessagingProtocol bidiMessagingProtocol);
 
     public byte[] shortToBytes(short input){
         byte[] bytes=new byte[2];

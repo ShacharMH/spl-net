@@ -1,8 +1,6 @@
 package bgu.spl.net.api.bidi.messagesToServer;
 
-import bgu.spl.net.api.bidi.BidiMessagingProtocol;
-import bgu.spl.net.api.bidi.Connections;
-import bgu.spl.net.api.bidi.AllUsers;
+import bgu.spl.net.api.bidi.*;
 import bgu.spl.net.api.bidi.messagesToClient.Ack;
 import bgu.spl.net.api.bidi.messagesToClient.Error;
 import bgu.spl.net.api.bidi.messagesToClient.Ack;
@@ -13,7 +11,7 @@ public class Logout extends BasicMessageToServer {
     }
 
     @Override
-    public void process(int ConnectionID, Connections connections, BidiMessagingProtocol bidiMessagingProtocol) {
+    public void process(int ConnectionID, ConnectionsImpl connections, myBidiMessagingProtocol bidiMessagingProtocol) {
         if (!AllUsers.getInstance().checkIfLoggedIn(ConnectionID))//if user isn't logged in
             connections.send(ConnectionID,new Error((short)3));
         else{

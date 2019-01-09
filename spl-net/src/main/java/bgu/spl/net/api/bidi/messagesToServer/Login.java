@@ -24,6 +24,7 @@ public class Login extends BasicMessageToServer {
         indexOfUserName=0;
         indexOfUserPassword=0;
         this.finished=false;
+        System.out.println("login is constructed");
     }
 
     @Override
@@ -43,7 +44,7 @@ public class Login extends BasicMessageToServer {
                 indexOfUserPassword++;
             }
             else{//we have finished to read Both the USERNAME and the PASSWORD
-                name=new String(bytes,0,indexOfUserName-1, StandardCharsets.UTF_8);
+                name=new String(bytes,0,indexOfUserName, StandardCharsets.UTF_8);
                 password=new String(bytes,indexOfUserName,indexOfUserPassword-1, StandardCharsets.UTF_8);
                 return this;
             }
@@ -54,8 +55,8 @@ public class Login extends BasicMessageToServer {
 
     @Override
     public void process(int ConnectionID, ConnectionsImpl connections, myBidiMessagingProtocol bidiMessagingProtocol) {
+        System.out.println("IN LOGIN PROCESS METHOD");
         AllUsers allUsers=AllUsers.getInstance();
-
         if(!allUsers.checkIfRegistered(name)) {//if user does not exist AKA has not registered
             System.out.println("User is not registered");
             connections.send(ConnectionID,new Error((short)2));//The constructed Error is the response to send back to this client.

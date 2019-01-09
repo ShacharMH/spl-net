@@ -1,19 +1,19 @@
 package bgu.spl.net.api.bidi;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 import bgu.spl.net.api.bidi.messagesToClient.Notification;
+import java.util.ArrayList;
 
 public class User {
-    private AtomicInteger connectionID;
+    private Integer connectionID;
     private String name;
     private String password;
     private int registrationTime;
     private List<String> followers;//list of followers of this user
     private List<String> following;//list of users that the user is following
-    private List<Notification> AwaitingNotifications;// NEED TO IMPLEMENT NOTIFICATION
-    private List<Notification> sentPMs;
-    private List<Notification> sentPosts;
+    private ArrayList<Notification> AwaitingNotifications=new ArrayList<>();// NEED TO IMPLEMENT NOTIFICATION
+    private ArrayList<Notification> sentPMs=new ArrayList<>();
+    private ArrayList<Notification> sentPosts=new ArrayList<>();
 
 
     public User(String name,String password){
@@ -32,14 +32,14 @@ public class User {
     }
 
     public void setConnectionID(Integer connectionID){
-        this.connectionID= new AtomicInteger(connectionID);
+        this.connectionID=connectionID;
     }
 
     public String getName(){
         return name;
     }
 
-    public AtomicInteger getConnectionId() {
+    public Integer getConnectionId() {
         return this.connectionID;
     }
 
@@ -121,14 +121,14 @@ public class User {
     private static class Pair {
 
         String name;
-        AtomicInteger connId;
+        Integer connId;
 
         public Pair(String name, int connId) {
             this.name = name;
-            this.connId = new AtomicInteger(connId);
+            this.connId = new Integer(connId);
         }
 
-        public AtomicInteger getConnId() {
+        public Integer getConnId() {
             return connId;
         }
 

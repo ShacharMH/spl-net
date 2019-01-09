@@ -12,7 +12,7 @@ public class BidiMessagingProtocolImpl<T> implements myBidiMessagingProtocol<T> 
     private int connectionId;
     private boolean shouldTerminate;
 
-    public BidiMessagingProtocolImpl() {}
+
 
     /* initiate the protocol with the active connections structure of the server and saves the
 owner client’s connection id.

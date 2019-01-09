@@ -1,10 +1,9 @@
 package bgu.spl.net.srv;
 
-import bgu.spl.net.api.MessageEncoderDecoder;
-import bgu.spl.net.api.MessagingProtocol;
-import bgu.spl.net.api.bidi.BidiMessagingProtocol;
+import bgu.spl.net.api.MessageEncoderDecoderImpl;
 import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.ConnectionsImpl;
+
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -19,8 +18,8 @@ import java.util.function.Supplier;
 public class Reactor<T> implements Server<T> {
 
     private final int port;
-    private final Supplier<BidiMessagingProtocol<T>> protocolFactory;
-    private final Supplier<MessageEncoderDecoder<T>> readerFactory;
+    private final Supplier<BidiMessagingProtocolImpl<T>> protocolFactory;
+    private final Supplier<MessageEncoderDecoderImpl> readerFactory;
     private final ActorThreadPool pool;
     private Selector selector;
     private Thread selectorThread;
@@ -32,8 +31,8 @@ public class Reactor<T> implements Server<T> {
     public Reactor(
             int numThreads,
             int port,
-            Supplier<BidiMessagingProtocol<T>> protocolFactory,
-            Supplier<MessageEncoderDecoder<T>> readerFactory) {
+            Supplier<BidiMessagingProtocolImpl<T>> protocolFactory,
+            Supplier<MessageEncoderDecoderImpl> readerFactory) {
 
         this.pool = new ActorThreadPool(numThreads);
         this.port = port;
@@ -46,21 +45,21 @@ public class Reactor<T> implements Server<T> {
 
     @Override
     public void serve() {
-	selectorThread = Thread.currentThread();
+        selectorThread = Thread.currentThread();
 
-	// additions:
+        // additions:
         this.connections = new ConnectionsImpl();
         //
 
         try (Selector selector = Selector.open(); // we initiate the selector
-                ServerSocketChannel serverSock = ServerSocketChannel.open()) { // and also initiate the server socket.
+             ServerSocketChannel serverSock = ServerSocketChannel.open()) { // and also initiate the server socket.
 
             this.selector = selector; //just to be able to close
 
             serverSock.bind(new InetSocketAddress(port)); // Binds the channel's socket to a local address and configures the socket to listen for connections.
             serverSock.configureBlocking(false);
             serverSock.register(selector, SelectionKey.OP_ACCEPT);
-			System.out.println("Server started");
+            System.out.println("REACTOR Server started");
 
             while (!Thread.currentThread().isInterrupted()) { // the main loop of the reactor
 
@@ -109,18 +108,19 @@ public class Reactor<T> implements Server<T> {
     private void handleAccept(ServerSocketChannel serverChan, Selector selector) throws IOException {
         SocketChannel clientChan = serverChan.accept();
         clientChan.configureBlocking(false);
+        BidiMessagingProtocolImpl bidiMessagingProtocol=protocolFactory.get();
         final NonBlockingConnectionHandler<T> handler = new NonBlockingConnectionHandler<T>(
                 connections,
                 connectionId,
                 readerFactory.get(),
-                (BidiMessagingProtocolImpl<T>) protocolFactory.get(),
+                 protocolFactory.get(),
                 clientChan,
                 this);
         clientChan.register(selector, SelectionKey.OP_READ, handler);
 
         //additions:
-        connections.addToConnectedUsers((bgu.spl.net.srv.bidi.ConnectionHandler)handler);
-        connectionId++;
+        connections.addToConnectedUsers(handler);
+        increaseConnectionId();
         //
     }
 
@@ -135,7 +135,7 @@ public class Reactor<T> implements Server<T> {
             }
         }
 
-	    if (key.isValid() && key.isWritable()) {
+        if (key.isValid() && key.isWritable()) {
             handler.continueWrite();
         }
     }
@@ -150,5 +150,8 @@ public class Reactor<T> implements Server<T> {
     public void close() throws IOException {
         selector.close();
     }
-
+    private void increaseConnectionId(){
+        connectionId++;
+        connections.increaseConnectionId();
+    }
 }

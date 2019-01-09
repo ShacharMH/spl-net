@@ -9,8 +9,10 @@ public class Error extends BasicMessageToClient {
 
     public Error(short type){
         super();
+        System.out.println("constructing an error");
         this.type=type;
         setOpCode((short)11);
+        encode();
     }
 
     @Override

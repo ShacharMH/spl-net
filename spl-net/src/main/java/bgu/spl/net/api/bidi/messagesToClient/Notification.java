@@ -1,6 +1,6 @@
 package bgu.spl.net.api.bidi.messagesToClient;
 
-import bgu.spl.net.api.bidi.messagesToClient.BasicMessageToClient;
+
 
 public class Notification extends BasicMessageToClient {
 private char TypeOfMessage;//can have 2 values-0(PM) or 1(public message)

@@ -10,6 +10,7 @@ public class UserList extends BasicMessageToServer {
 
     public UserList(){
         super();
+        System.out.println("USERLIST IS CONSTRUCTED");
     }
     @Override
     public Object decode(byte nextByte) {
@@ -18,6 +19,7 @@ public class UserList extends BasicMessageToServer {
 
     @Override
     public void process(int ConnectionID, ConnectionsImpl connections, myBidiMessagingProtocol bidiMessagingProtocol) {
+        System.out.println("WE are inside the process method of USERIST");
         if (!AllUsers.getInstance().checkIfLoggedIn(ConnectionID)) {//if sending user isn't logged in
             connections.send(ConnectionID, new Error((short) 7));
         }

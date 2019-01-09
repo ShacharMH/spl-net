@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Post extends BasicMessageToServer {
 
-    byte[] bytes;
-    int index;
+    private byte[] bytes;
+    private int index;
     private String string;
     private String[] parsedString;
     private List<String> taggedUsers;
@@ -22,7 +22,10 @@ public class Post extends BasicMessageToServer {
 
     public Post() {
         super();
+        index=0;
         allUsers = AllUsers.getInstance();
+        bytes=new byte[1<<10];
+        System.out.println("CONSTRUCTING A POST");
     }
 
     public Object decode(byte nextByte) {
@@ -38,6 +41,7 @@ public class Post extends BasicMessageToServer {
 
     public void process(int ConnectionID, ConnectionsImpl connections, myBidiMessagingProtocol bidiMessagingProtocol) {
         // check if user is logged in, if not - send an error
+        System.out.println("INSIDE POST PROCESS METHOD");
         if (!allUsers.checkIfLoggedIn(ConnectionID)) {
             connections.send(ConnectionID, new Error(PostOpCode));
             return;

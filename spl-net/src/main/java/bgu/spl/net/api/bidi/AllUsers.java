@@ -3,6 +3,7 @@ package bgu.spl.net.api.bidi;
 
 import bgu.spl.net.api.bidi.messagesToClient.Notification;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -17,7 +18,7 @@ public  class  AllUsers {
          return HolderOfAllUsers.allUsers;
      }
     private int numOfRegistered=0;
-    private List<User> ListOfRegisteredUsers;
+    private ArrayList<User> ListOfRegisteredUsers=new ArrayList<>();
     private ConcurrentHashMap<String, User> registeredUsers=new ConcurrentHashMap<>();//Users that have registered
     private ConcurrentHashMap<String, User> loggedInUsers=new ConcurrentHashMap<>();//Users that have logged in
     private ConcurrentHashMap<Integer, String> IDsToNames=new  ConcurrentHashMap<>();//Map between  a user's ID to his name

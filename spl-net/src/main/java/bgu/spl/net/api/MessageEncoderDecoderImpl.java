@@ -10,7 +10,7 @@ import bgu.spl.net.api.bidi.messagesToClient.Error;
  */
 public class MessageEncoderDecoderImpl implements MessageEncoderDecoder {
 
-    private byte[] messageInProcess = new byte[2];
+    private byte[] messageInProcess = new byte[1<<10];
     private int index = 0;
     private short type;
     private BasicMessageToServer msg;

@@ -1,7 +1,9 @@
 package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
-import bgu.spl.net.api.MessagingProtocol;
+import bgu.spl.net.api.MessageEncoderDecoderImpl;
+import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
+
 import java.io.Closeable;
 import java.util.function.Supplier;
 
@@ -22,9 +24,9 @@ public interface Server<T> extends Closeable {
      */
     /* Refactor the Thread-Per-Client server to support the new interfaces.
      */
-    public static <T> Server<T>  threadPerClient(
+    static <T> Server<T>  threadPerClient(
             int port,
-            Supplier<MessagingProtocol<T> > protocolFactory,
+            Supplier<BidiMessagingProtocolImpl<T> > protocolFactory,
             Supplier<MessageEncoderDecoder<T> > encoderDecoderFactory) {
 
         /* this is an anonymous class: the arguments in the parenthesis is the arguments for a constructor.
@@ -32,7 +34,7 @@ public interface Server<T> extends Closeable {
         return new BaseServer<T>(port, protocolFactory, encoderDecoderFactory) {
             @Override
             protected void execute(BlockingConnectionHandler<T>  handler) {
-                new Thread(handler).start(); // is this a function we need to implement? Allah knows.
+                new Thread(handler).start();
             }
         };
 
@@ -49,12 +51,12 @@ public interface Server<T> extends Closeable {
      */
     /* Refactor the Reactor server to support the new interfaces.
      */
-    public static <T> Server<T> reactor(
+    static <T> Server<T> reactor(
             int nthreads,
             int port,
-            Supplier<MessagingProtocol<T>> protocolFactory,
-            Supplier<MessageEncoderDecoder<T>> encoderDecoderFactory) {
-        return new Reactor<T>(nthreads, port, protocolFactory, encoderDecoderFactory);
+            Supplier<BidiMessagingProtocolImpl<T>> protocolFactory,
+            Supplier<MessageEncoderDecoderImpl> encoderDecoderFactory) {
+        return new Reactor<>(nthreads, port, protocolFactory, encoderDecoderFactory);
     }
 
 }

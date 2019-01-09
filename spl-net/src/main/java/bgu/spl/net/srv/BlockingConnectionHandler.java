@@ -1,18 +1,18 @@
 package bgu.spl.net.srv;
 
 import bgu.spl.net.api.MessageEncoderDecoder;
-import bgu.spl.net.api.MessagingProtocol;
-import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.api.bidi.ConnectionsImpl;
+import bgu.spl.net.api.bidi.messagesToClient.BasicMessageToClient;
 import bgu.spl.net.api.bidi.myBidiMessagingProtocol;
+import bgu.spl.net.srv.bidi.ConnectionHandler;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler<T> {
+public class BlockingConnectionHandler<T>  implements Runnable, ConnectionHandler<T> {
 
     private final myBidiMessagingProtocol<T> protocol;
     private final MessageEncoderDecoder<T> encdec;
@@ -26,7 +26,7 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
         this.encdec = reader;
         this.protocol = protocol;
         // additions:
-        protocol.start(connections.getConnectionId(), connections);
+        this.protocol.start(connections.getConnectionId(), connections);
     }
 
     @Override
@@ -50,18 +50,18 @@ public class BlockingConnectionHandler<T> implements Runnable, ConnectionHandler
 
     }
 
-    /* lets see if we need it
+    // lets see if we need it
 
-    @Override
+
     public void send(T msg) {
         try {
-            out.write(((ServerToClientMessages)msg).encode());
+            out.write(((BasicMessageToClient)msg).encode());
             out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    */
+
 
     @Override
     public void close() throws IOException {

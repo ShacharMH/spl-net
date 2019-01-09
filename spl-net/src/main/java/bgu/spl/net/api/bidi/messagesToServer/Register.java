@@ -12,8 +12,8 @@ private AllUsers allUsers;
 private String name;
 private String password;
 private byte[] bytes;
-private int indexOfUserName;//change name later  //holds the space of the USERNAME in bytes
-private int indexOfUserPassword;//change name later  ////holds the space of the PASSWORD in bytes
+private int indexOfUserName;//  //holds the space of the USERNAME in bytes
+private int indexOfUserPassword;//////holds the space of the PASSWORD in bytes
 private boolean finished;//indicates if we have finished to read USERNAME
 
 
@@ -24,6 +24,7 @@ private boolean finished;//indicates if we have finished to read USERNAME
         indexOfUserPassword=0;
         this.finished=false;
         allUsers = AllUsers.getInstance();
+        System.out.println("Register is constructed");
     }
 
 
@@ -45,8 +46,9 @@ private boolean finished;//indicates if we have finished to read USERNAME
                  indexOfUserPassword++;
             }
              else{//we have finished to read Both the USERNAME and the PASSWORD
-                 name=new String(bytes,0,indexOfUserName-1, StandardCharsets.UTF_8);
+                 name=new String(bytes,0,indexOfUserName, StandardCharsets.UTF_8);
                  password=new String(bytes,indexOfUserName,indexOfUserPassword-1, StandardCharsets.UTF_8);
+                 System.out.println("name is "+name+" and password is "+password);
                  return this;
              }
             }
@@ -61,7 +63,7 @@ private boolean finished;//indicates if we have finished to read USERNAME
     @Override
     public void process(int ConnectionID, ConnectionsImpl connections, myBidiMessagingProtocol bidiMessagingProtocol) {
         //If user is already registered:
-
+        System.out.println("in the register process method");
         if(allUsers.checkIfRegistered(this.name)){
             System.out.println("User is already registered");
             connections.send(ConnectionID,new Error((short)1));//The constructed Error is the response to send back to this client.

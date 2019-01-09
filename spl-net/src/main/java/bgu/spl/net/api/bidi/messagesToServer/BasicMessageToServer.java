@@ -1,6 +1,4 @@
 package bgu.spl.net.api.bidi.messagesToServer;
-import bgu.spl.net.api.bidi.Connections;
-import bgu.spl.net.api.bidi.BidiMessagingProtocol;
 import bgu.spl.net.api.bidi.ConnectionsImpl;
 import bgu.spl.net.api.bidi.myBidiMessagingProtocol;
 

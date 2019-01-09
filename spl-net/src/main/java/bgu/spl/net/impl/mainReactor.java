@@ -16,7 +16,8 @@ public class mainReactor {
 
         Server.reactor(numOfThreads,
                 port, //port
-                () -> new BidiMessagingProtocolImpl(), //protocol factory - have no idea what the problem is
+                () -> new BidiMessagingProtocolImpl() {
+                }, //protocol factory - have no idea what the problem is
                 MessageEncoderDecoderImpl::new //message encoder decoder factory
         ).serve();
     }

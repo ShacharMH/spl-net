@@ -1,8 +1,11 @@
 package bgu.spl.net.api.bidi;
-import bgu.spl.net.srv.bidi.ConnectionHandler;
+
+
+
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import bgu.spl.net.srv.bidi.ConnectionHandler;
 //************* start with this *****************
 /* Implement Connections<T> to hold a list of the new ConnectionHandler interface
 for each active client. Use it to implement the interface functions. Notice that
@@ -15,23 +18,26 @@ connected to the server
  */
 public class ConnectionsImpl<T> implements Connections<T> {
 
-    private ConcurrentHashMap<AtomicInteger, ConnectionHandler> connectedUsers;
-    private AtomicInteger connectionId;
+    private ConcurrentHashMap<Integer, ConnectionHandler<T>> connectedUsers;
+    private Integer connectionId;
 
     public ConnectionsImpl() {
         this.connectedUsers = new ConcurrentHashMap<>();
-        this.connectionId = new AtomicInteger(1);
+        this.connectionId = new Integer(0);
     }
 
-    public void addToConnectedUsers(ConnectionHandler connectionHandler) {
+    public void addToConnectedUsers(ConnectionHandler<T> connectionHandler) {
+
         connectedUsers.putIfAbsent(connectionId, connectionHandler);
-        connectionId.incrementAndGet();
+
+
     }
 
     /* sends a message T to client represented by the given connId
      */
     public boolean send(int connectionId, T msg) {
-        ConnectionHandler connectionHandler = connectedUsers.get(new AtomicInteger(connectionId));
+
+        ConnectionHandler connectionHandler = connectedUsers.get(connectionId);
         synchronized (connectionHandler) {
             if (connectionHandler != null) {
                 connectionHandler.send(msg);
@@ -42,6 +48,7 @@ public class ConnectionsImpl<T> implements Connections<T> {
             return false;
         }
     }
+
 
     public int getConnectionId() {
         return connectionId.intValue();
@@ -58,7 +65,12 @@ implemenration, not the protocol!.
 
     /* removes active client connId from map.
      */
-    public void disconnect(int connectionId) {
-        connectedUsers.remove(new AtomicInteger(connectionId));
+    public synchronized void disconnect(int connectionId) {
+        connectedUsers.remove(new Integer(connectionId));
+    }//maybe add synchronized- so we don't get the problem we had in assignment 2 (with unregister and send)?
+
+
+    public synchronized void increaseConnectionId(){
+        connectionId++;
     }
 }

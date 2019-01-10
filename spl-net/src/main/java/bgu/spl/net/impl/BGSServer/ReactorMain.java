@@ -4,7 +4,7 @@ import bgu.spl.net.api.MessageEncoderDecoderImpl;
 import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.srv.Server;
 
-public class ReactorMain {
+public class ReactorMain {//updated
 
         @SuppressWarnings("unchecked")
         public static void main(String args[]) {

@@ -4,7 +4,7 @@ import bgu.spl.net.api.MessageEncoderDecoderImpl;
 import bgu.spl.net.api.bidi.BidiMessagingProtocolImpl;
 import bgu.spl.net.srv.Server;
 
-public class TPCMain {
+public class TPCMain {//updated
 
         public static void main(String[] args) {
 

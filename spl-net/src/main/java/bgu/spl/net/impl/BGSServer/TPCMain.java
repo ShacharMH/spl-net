@@ -8,8 +8,8 @@ public class TPCMain {//updated
 
         public static void main(String[] args) {
 
-            int port = 666;
-            //int port = Integer.parseInt(args[0]);
+            //int port = 666;
+            int port = Integer.parseInt(args[0]);
             Server.threadPerClient(
                     port, //port
                     () -> new BidiMessagingProtocolImpl(), //protocol factory ..

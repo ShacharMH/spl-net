@@ -9,15 +9,15 @@ public class ReactorMain {//updated
         @SuppressWarnings("unchecked")
         public static void main(String args[]) {
 
-            //int port = Integer.parseInt(args[0]);
-            int port = 666;
-            //int numOfThreads = Integer.parseInt(args[1]);
-            int numOfThreads = 6;
+            int port = Integer.parseInt(args[0]);
+            //int port = 666;
+            int numOfThreads = Integer.parseInt(args[1]);
+            //int numOfThreads = 6;
 
             Server.reactor(numOfThreads,
                     port, //port
                     () -> new BidiMessagingProtocolImpl() {
-                    }, //protocol factory - have no idea what the problem is
+                    }, //protocol factory
                     MessageEncoderDecoderImpl::new //message encoder decoder factory
             ).serve();
         }
